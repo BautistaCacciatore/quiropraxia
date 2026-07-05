@@ -1,0 +1,42 @@
+.tabla-contenedor {
+    background: var(--color-surface);
+    border-radius: var(--radius);
+    border: 1px solid var(--color-border);
+    box-shadow: var(--sombra);
+    overflow-x: auto;
+  }
+  
+  .tabla-pacientes {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 640px;
+  }
+  
+  .tabla-pacientes th {
+    text-align: left;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--color-text-muted);
+    padding: 0.85rem 1rem;
+    border-bottom: 1px solid var(--color-border);
+  }
+  
+  .tabla-pacientes td {
+    padding: 0.85rem 1rem;
+    border-bottom: 1px solid var(--color-border);
+  }
+  
+  .tabla-pacientes tbody tr:last-child td {
+    border-bottom: none;
+  }
+  
+  .tabla-pacientes tbody tr:hover {
+    background: var(--color-bg);
+  }
+  
+  .acciones {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+  }

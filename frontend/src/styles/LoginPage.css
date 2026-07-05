@@ -1,0 +1,35 @@
+.pagina-login {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+  }
+  
+  .tarjeta-login {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    box-shadow: var(--sombra);
+    padding: 2.5rem 2rem;
+    width: 100%;
+    max-width: 360px;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .tarjeta-login h1 {
+    text-align: center;
+    color: var(--color-primary-dark);
+    font-size: 1.5rem;
+  }
+  
+  .tarjeta-login .subtitulo {
+    text-align: center;
+    margin: -0.5rem 0 0.5rem;
+  }
+  
+  .tarjeta-login .btn-primario {
+    margin-top: 0.5rem;
+  }

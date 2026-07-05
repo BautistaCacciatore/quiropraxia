@@ -1,0 +1,75 @@
+.pagina-formulario {
+    max-width: 780px;
+    margin: 0 auto;
+  }
+  
+  .tarjeta-formulario {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    box-shadow: var(--sombra);
+    padding: 2rem;
+  }
+  
+  .seccion-formulario {
+    margin-bottom: 2rem;
+  }
+  
+  .seccion-formulario:last-of-type {
+    margin-bottom: 0.5rem;
+  }
+  
+  .seccion-formulario h3 {
+    font-size: 1rem;
+    color: var(--color-primary-dark);
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--color-border);
+  }
+  
+  .seccion-formulario .campo-ancho {
+    margin-bottom: 1.1rem;
+  }
+  
+  .seccion-formulario .campo-ancho:last-child {
+    margin-bottom: 0;
+  }
+  
+  .indicador-paso {
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    margin: 0 0 1.2rem;
+  }
+  
+  /* --- Pestañas del formulario (modo edición) --- */
+  
+  .pestañas-formulario {
+    display: flex;
+    gap: 0.4rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid var(--color-border);
+    flex-wrap: wrap;
+  }
+  
+  .pestaña-boton {
+    background: none;
+    border: none;
+    padding: 0.6rem 0.9rem;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+  }
+  
+  .pestaña-boton:hover {
+    color: var(--color-primary-dark);
+  }
+  
+  .pestaña-boton.activa {
+    color: var(--color-primary-dark);
+    border-bottom-color: var(--color-accent);
+  }

@@ -1,0 +1,33 @@
+# Variables de entorno (contienen contraseñas, nunca subir)
+.env
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+env/
+*.egg-info/
+
+# Base de datos local (SQLite, si se usó para pruebas rápidas)
+*.db
+quiro_local.db
+
+# Node / frontend (Vite)
+node_modules/
+dist/
+dist-ssr/
+*.local
+
+# Archivos subidos por el médico (radiografías reales de pacientes:
+# nunca se versionan, y además hay que backupearlos aparte de la base)
+backend/uploads/
+
+# Docker
+# (el volumen de datos de Postgres vive dentro de Docker, no en el repo)
+
+# Editor / SO
+.vscode/
+.idea/
+.DS_Store

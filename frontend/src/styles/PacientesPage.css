@@ -1,0 +1,10 @@
+.barra-busqueda {
+    display: flex;
+    gap: 0.6rem;
+    margin-bottom: 1.5rem;
+    max-width: 420px;
+  }
+  
+  .barra-busqueda input {
+    flex: 1;
+  }

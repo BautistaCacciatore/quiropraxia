@@ -1,0 +1,186 @@
+.formulario-radiografia {
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .lista-radiografias {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+  }
+  
+  .tarjeta-radiografia {
+    display: flex;
+    gap: 1rem;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    padding: 0.9rem;
+  }
+  
+  .vista-previa-radiografia {
+    flex-shrink: 0;
+    width: 72px;
+    height: 72px;
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--color-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .vista-previa-radiografia img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .icono-pdf {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--color-danger);
+    border: 2px solid var(--color-danger);
+    border-radius: 6px;
+    padding: 0.3rem 0.5rem;
+  }
+  
+  .info-radiografia {
+    flex: 1;
+    min-width: 0;
+  }
+  
+  .info-radiografia h4 {
+    margin: 0.15rem 0 0.3rem;
+    font-size: 0.98rem;
+    color: var(--color-text);
+  }
+  
+  .fecha-radiografia {
+    margin: 0;
+    font-size: 0.78rem;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+  
+  .descripcion-radiografia {
+    margin: 0 0 0.5rem;
+    font-size: 0.88rem;
+    color: var(--color-text-muted);
+  }
+  
+  .acciones-radiografia {
+    display: flex;
+    gap: 1rem;
+  }
+  
+  /* --- Selector de archivo con vista previa --- */
+  
+  .selector-archivo {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    flex-wrap: wrap;
+  }
+  
+  .input-archivo-oculto {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    overflow: hidden;
+  }
+  
+  .boton-elegir-archivo {
+    display: inline-flex;
+    align-items: center;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    padding: 0.6rem 1.1rem;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--color-primary-dark);
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+  }
+  
+  .boton-elegir-archivo:hover {
+    background: var(--color-bg);
+  }
+  
+  .texto-sin-archivo {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+  }
+  
+  .previsualizacion-archivo {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    padding: 0.5rem 0.8rem;
+  }
+  
+  .previsualizacion-archivo img {
+    width: 44px;
+    height: 44px;
+    object-fit: cover;
+    border-radius: 6px;
+    flex-shrink: 0;
+  }
+  
+  .icono-archivo-generico {
+    width: 44px;
+    height: 44px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--color-danger);
+    border: 2px solid var(--color-danger);
+    border-radius: 6px;
+  }
+  
+  .datos-archivo-seleccionado {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+  }
+  
+  .nombre-archivo-seleccionado {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--color-text);
+    max-width: 220px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  
+  .tamano-archivo-seleccionado {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+  }
+  
+  .btn-quitar-archivo {
+    background: none;
+    border: none;
+    color: var(--color-text-muted);
+    font-size: 1rem;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0.2rem;
+  }
+  
+  .btn-quitar-archivo:hover {
+    color: var(--color-danger);
+  }
