@@ -10,6 +10,7 @@ from app.schemas.auth import LoginRequest
 from app.services.auth import autenticar
 from app.exceptions.exceptions import CredencialesInvalidas
 from app.core.security import crear_token
+from app.core.config import settings
 from app.core.dependencies import requiere_autenticacion, NOMBRE_COOKIE
 
 router = APIRouter(prefix="/auth", tags=["Autenticación"])
@@ -29,7 +30,7 @@ def login(datos: LoginRequest, response: Response):
         value=token,
         httponly=True,       # JavaScript no puede leer esta cookie
         samesite="lax",       # protección básica contra CSRF
-        secure=False,          # poner en True cuando el sitio se sirva por HTTPS
+        secure=settings.COOKIE_SECURE,
         max_age=60 * 60 * 8,     # 8 horas, coincide con ACCESS_TOKEN_EXPIRE_MINUTES
         path="/",
     )

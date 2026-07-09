@@ -8,6 +8,8 @@ Documentación interactiva disponible en:
     http://127.0.0.1:8000/docs
 """
 
+import os
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -23,9 +25,11 @@ app = FastAPI(
 # en localhost:5173) le hace a esta API (corriendo en localhost:8000),
 # porque son "orígenes" distintos. Acá se lista explícitamente qué
 # orígenes están permitidos a llamarla.
+origins_str = os.getenv("CORS_ORIGINS", "http://localhost:5173,http://127.0.0.1:5173")
+allow_origins = [o.strip() for o in origins_str.split(",") if o.strip()]
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
+    allow_origins=allow_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

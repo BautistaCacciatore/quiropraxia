@@ -46,6 +46,9 @@ class Settings:
     # Cuánto dura la sesión antes de tener que loguearse de nuevo.
     ACCESS_TOKEN_EXPIRE_MINUTES: int = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "480"))  # 8 horas
 
+    # Cookie segura (True en producción con HTTPS, False en local).
+    COOKIE_SECURE: bool = os.getenv("COOKIE_SECURE", "false").lower() == "true"
+
     # --- Almacenamiento de archivos (radiografías, etc.) ---
     # Carpeta donde se guardan los archivos subidos. Relativa a donde se
     # corre uvicorn (backend/). El día de mañana que esto migre a la nube,
