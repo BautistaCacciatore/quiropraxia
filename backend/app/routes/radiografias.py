@@ -69,7 +69,7 @@ def listar_radiografias_de_paciente(dni: str):
 
 
 @router_radiografia.get("/{radiografia_id}/archivo")
-def descargar_archivo(radiografia_id: int):
+def descargar_archivo(radiografia_id: int, descargar: bool = False):
     try:
         radiografia = radiografia_service.obtener_radiografia(radiografia_id)
     except RadiografiaNoEncontrada as e:
@@ -79,7 +79,16 @@ def descargar_archivo(radiografia_id: int):
     if not ruta.exists():
         raise HTTPException(status_code=404, detail="El archivo ya no existe en el servidor")
 
-    return FileResponse(path=ruta, media_type=radiografia.tipo_archivo, filename=radiografia.nombre_archivo)
+    # "inline" = el navegador lo muestra directo (imagen o PDF embebido).
+    # "attachment" = fuerza la descarga real. Por defecto, inline —
+    # así funciona tanto para la vista previa como para abrir en pestaña.
+    disposicion = "attachment" if descargar else "inline"
+    return FileResponse(
+        path=ruta,
+        media_type=radiografia.tipo_archivo,
+        filename=radiografia.nombre_archivo,
+        content_disposition_type=disposicion,
+    )
 
 
 @router_radiografia.delete("/{radiografia_id}", status_code=204)

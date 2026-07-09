@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { listarRadiografias, subirRadiografia, eliminarRadiografia, urlArchivo } from "../api/radiografias";
+import RadiografiaVisor from "./RadiografiaVisor";
 import "../styles/RadiografiasPaciente.css";
 
 const FORM_INICIAL = { titulo: "", fecha: "", descripcion: "" };
@@ -12,6 +13,7 @@ export default function RadiografiasPaciente({ dni }) {
   const [archivo, setArchivo] = useState(null);
   const [previsualizacion, setPrevisualizacion] = useState(null);
   const [subiendo, setSubiendo] = useState(false);
+  const [radiografiaSeleccionada, setRadiografiaSeleccionada] = useState(null);
 
   useEffect(() => {
     cargar();
@@ -203,8 +205,11 @@ export default function RadiografiasPaciente({ dni }) {
                 {r.descripcion && <p className="descripcion-radiografia">{r.descripcion}</p>}
 
                 <div className="acciones-radiografia">
-                  <a href={urlArchivo(r.id)} target="_blank" rel="noreferrer" className="btn-texto">
-                    Ver / Descargar
+                  <button type="button" className="btn-texto" onClick={() => setRadiografiaSeleccionada(r)}>
+                    Ver
+                  </button>
+                  <a href={urlArchivo(r.id, { descargar: true })} className="btn-texto">
+                    Descargar
                   </a>
                   <button type="button" className="btn-texto btn-texto-peligro" onClick={() => manejarEliminar(r.id)}>
                     Eliminar
@@ -215,6 +220,8 @@ export default function RadiografiasPaciente({ dni }) {
           ))
         )}
       </div>
+
+      <RadiografiaVisor radiografia={radiografiaSeleccionada} onCerrar={() => setRadiografiaSeleccionada(null)} />
     </div>
   );
 }

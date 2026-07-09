@@ -1,5 +1,3 @@
-import "../styles/ConfirmarEliminar.css";
-
 export default function ConfirmarEliminar({ paciente, onConfirmar, onCancelar }) {
   if (!paciente) return null;
 

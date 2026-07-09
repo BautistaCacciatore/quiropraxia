@@ -48,6 +48,7 @@ export async function eliminarRadiografia(id) {
   return manejarRespuesta(res);
 }
 
-export function urlArchivo(id) {
-  return `${API_URL}/radiografias/${id}/archivo`;
+export function urlArchivo(id, { descargar = false } = {}) {
+  const base = `${API_URL}/radiografias/${id}/archivo`;
+  return descargar ? `${base}?descargar=true` : base;
 }

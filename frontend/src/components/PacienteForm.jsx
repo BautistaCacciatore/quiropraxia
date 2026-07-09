@@ -125,7 +125,7 @@ export default function PacienteForm({ pacienteInicial, onGuardar, onCancelar })
   }
 
   return (
-    <form className="tarjeta-formulario" onSubmit={manejarEnvio} ref={formRef}>
+    <div className="tarjeta-formulario">
       {esEdicion ? (
         <div className="pestañas-formulario">
           {pestañas.map((p) => (
@@ -147,238 +147,272 @@ export default function PacienteForm({ pacienteInicial, onGuardar, onCancelar })
 
       {error && <p className="mensaje-error">{error}</p>}
 
-      {paso === 1 && (
+      {paso === 3 && esEdicion ? (
+        // Ojo: esto NO va dentro de un <form>. RadiografiasPaciente tiene
+        // su propio <form> para subir archivos, y un <form> anidado dentro
+        // de otro rompe el submit (el evento "submit" del de adentro
+        // termina disparando también el de afuera).
         <>
           <section className="seccion-formulario">
-            <h3>Datos personales</h3>
-            <div className="grilla-campos">
-              <label>
-                DNI
-                <input
-                  type="text"
-                  value={form.dni}
-                  onChange={(e) => actualizarCampo("dni", e.target.value)}
-                  required
-                  disabled={esEdicion}
-                />
-              </label>
-
-              <label>
-                Nombre
-                <input type="text" value={form.nombre} onChange={(e) => actualizarCampo("nombre", e.target.value)} required />
-              </label>
-
-              <label>
-                Apellido
-                <input type="text" value={form.apellido} onChange={(e) => actualizarCampo("apellido", e.target.value)} required />
-              </label>
-
-              <label>
-                Fecha de nacimiento
-                <input
-                  type="date"
-                  value={form.fecha_nacimiento}
-                  onChange={(e) => actualizarCampo("fecha_nacimiento", e.target.value)}
-                  required
-                />
-              </label>
-            </div>
+            <h3>Radiografías</h3>
+            <RadiografiasPaciente dni={pacienteInicial.dni} />
           </section>
 
-          <section className="seccion-formulario">
-            <h3>Contacto y contexto</h3>
-            <div className="grilla-campos">
-              <label>
-                Teléfono
-                <input type="text" value={form.telefono} onChange={(e) => actualizarCampo("telefono", e.target.value)} />
-              </label>
-
-              <label>
-                Ocupación
-                <input type="text" value={form.ocupacion} onChange={(e) => actualizarCampo("ocupacion", e.target.value)} />
-              </label>
-
-              <label>
-                Recomendado por
-                <input type="text" value={form.recomendado} onChange={(e) => actualizarCampo("recomendado", e.target.value)} />
-              </label>
-
-              <label>
-                Actividad física
-                <input
-                  type="text"
-                  value={form.actividad_fisica}
-                  onChange={(e) => actualizarCampo("actividad_fisica", e.target.value)}
-                />
-              </label>
-            </div>
-
-            <label className="campo-ancho">
-              Algo para comentar
-              <textarea rows="3" value={form.comentario} onChange={(e) => actualizarCampo("comentario", e.target.value)} />
-            </label>
-          </section>
-
-          <section className="seccion-formulario">
-            <h3>Historia clínica</h3>
-
-            <label className="campo-ancho">
-              Historia clínica familiar
-              <textarea
-                rows="4"
-                value={form.historia_clinica_familiar}
-                onChange={(e) => actualizarCampo("historia_clinica_familiar", e.target.value)}
-              />
-            </label>
-
-            <label className="campo-ancho">
-              Historia clínica pasada
-              <textarea
-                rows="4"
-                value={form.historia_clinica_pasada}
-                onChange={(e) => actualizarCampo("historia_clinica_pasada", e.target.value)}
-              />
-            </label>
-
-            <label className="campo-ancho">
-              Razón de la consulta
-              <textarea rows="3" value={form.razon_consulta} onChange={(e) => actualizarCampo("razon_consulta", e.target.value)} />
-            </label>
-
-            <label className="campo-ancho">
-              Antecedentes previos
-              <textarea
-                rows="4"
-                value={form.antecedentes_previos}
-                onChange={(e) => actualizarCampo("antecedentes_previos", e.target.value)}
-              />
-            </label>
-
-            <label className="campo-ancho">
-              Estudios previos
-              <textarea rows="4" value={form.estudios_previos} onChange={(e) => actualizarCampo("estudios_previos", e.target.value)} />
-            </label>
-
-            <label className="campo-ancho">
-              Medicamentos (razón)
-              <textarea rows="3" value={form.medicamentos} onChange={(e) => actualizarCampo("medicamentos", e.target.value)} />
-            </label>
-
-            <label className="campo-ancho">
-              Algo más para agregar
-              <textarea rows="3" value={form.otros_datos} onChange={(e) => actualizarCampo("otros_datos", e.target.value)} />
-            </label>
-          </section>
-        </>
-      )}
-
-      {paso === 2 && (
-        <section className="seccion-formulario">
-          <h3>Examen físico — Test de lateralidad de MMII e inclinación lateral</h3>
-
-          <div className="grilla-campos">
-            <label>
-              Leg Check
-              <input type="text" value={form.leg_check} onChange={(e) => actualizarCampo("leg_check", e.target.value)} />
-            </label>
-
-            <label>
-              Nervoscope
-              <input type="text" value={form.nervoscope} onChange={(e) => actualizarCampo("nervoscope", e.target.value)} />
-            </label>
-
-            <label>
-              Visualización: Frente
-              <input
-                type="text"
-                value={form.visualizacion_frente}
-                onChange={(e) => actualizarCampo("visualizacion_frente", e.target.value)}
-              />
-            </label>
-
-            <label>
-              Visualización: Perfil
-              <input
-                type="text"
-                value={form.visualizacion_perfil}
-                onChange={(e) => actualizarCampo("visualizacion_perfil", e.target.value)}
-              />
-            </label>
-
-            <label>
-              Palpación estática
-              <input
-                type="text"
-                value={form.palpacion_estatica}
-                onChange={(e) => actualizarCampo("palpacion_estatica", e.target.value)}
-              />
-            </label>
-
-            <label>
-              Palpación dinámica
-              <input
-                type="text"
-                value={form.palpacion_dinamica}
-                onChange={(e) => actualizarCampo("palpacion_dinamica", e.target.value)}
-              />
-            </label>
-          </div>
-
-          <div className="campo-ancho">
-            <span className="etiqueta-diagrama">Diagrama corporal — marcar zonas afectadas</span>
-            <DiagramaCorporal
-              valorInicial={form.diagrama_corporal}
-              onCambiar={(dataUrl) => actualizarCampo("diagrama_corporal", dataUrl)}
-            />
-          </div>
-        </section>
-      )}
-
-      {paso === 3 && esEdicion && (
-        <section className="seccion-formulario">
-          <h3>Radiografías</h3>
-          <RadiografiasPaciente dni={pacienteInicial.dni} />
-        </section>
-      )}
-
-      <div className="acciones-formulario">
-        {esEdicion ? (
-          <>
-            <button type="button" className="btn-secundario" onClick={onCancelar} disabled={enviando}>
+          <div className="acciones-formulario">
+            <button type="button" className="btn-secundario" onClick={onCancelar}>
               Volver
             </button>
-            {paso !== 3 && (
-              <button type="submit" className="btn-primario" disabled={enviando}>
-                {enviando ? "Guardando..." : "Guardar cambios"}
-              </button>
-            )}
-          </>
-        ) : (
-          <>
-            {paso === 1 && (
+          </div>
+        </>
+      ) : (
+        <form onSubmit={manejarEnvio} ref={formRef}>
+          {paso === 1 && (
+            <>
+              <section className="seccion-formulario">
+                <h3>Datos personales</h3>
+                <div className="grilla-campos">
+                  <label>
+                    DNI
+                    <input
+                      type="text"
+                      value={form.dni}
+                      onChange={(e) => actualizarCampo("dni", e.target.value)}
+                      required
+                      disabled={esEdicion}
+                    />
+                  </label>
+
+                  <label>
+                    Nombre
+                    <input
+                      type="text"
+                      value={form.nombre}
+                      onChange={(e) => actualizarCampo("nombre", e.target.value)}
+                      required
+                    />
+                  </label>
+
+                  <label>
+                    Apellido
+                    <input
+                      type="text"
+                      value={form.apellido}
+                      onChange={(e) => actualizarCampo("apellido", e.target.value)}
+                      required
+                    />
+                  </label>
+
+                  <label>
+                    Fecha de nacimiento
+                    <input
+                      type="date"
+                      value={form.fecha_nacimiento}
+                      onChange={(e) => actualizarCampo("fecha_nacimiento", e.target.value)}
+                      required
+                    />
+                  </label>
+                </div>
+              </section>
+
+              <section className="seccion-formulario">
+                <h3>Contacto y contexto</h3>
+                <div className="grilla-campos">
+                  <label>
+                    Teléfono
+                    <input type="text" value={form.telefono} onChange={(e) => actualizarCampo("telefono", e.target.value)} />
+                  </label>
+
+                  <label>
+                    Ocupación
+                    <input type="text" value={form.ocupacion} onChange={(e) => actualizarCampo("ocupacion", e.target.value)} />
+                  </label>
+
+                  <label>
+                    Recomendado por
+                    <input
+                      type="text"
+                      value={form.recomendado}
+                      onChange={(e) => actualizarCampo("recomendado", e.target.value)}
+                    />
+                  </label>
+
+                  <label>
+                    Actividad física
+                    <input
+                      type="text"
+                      value={form.actividad_fisica}
+                      onChange={(e) => actualizarCampo("actividad_fisica", e.target.value)}
+                    />
+                  </label>
+                </div>
+
+                <label className="campo-ancho">
+                  Algo para comentar
+                  <textarea rows="3" value={form.comentario} onChange={(e) => actualizarCampo("comentario", e.target.value)} />
+                </label>
+              </section>
+
+              <section className="seccion-formulario">
+                <h3>Historia clínica</h3>
+
+                <label className="campo-ancho">
+                  Historia clínica familiar
+                  <textarea
+                    rows="4"
+                    value={form.historia_clinica_familiar}
+                    onChange={(e) => actualizarCampo("historia_clinica_familiar", e.target.value)}
+                  />
+                </label>
+
+                <label className="campo-ancho">
+                  Historia clínica pasada
+                  <textarea
+                    rows="4"
+                    value={form.historia_clinica_pasada}
+                    onChange={(e) => actualizarCampo("historia_clinica_pasada", e.target.value)}
+                  />
+                </label>
+
+                <label className="campo-ancho">
+                  Razón de la consulta
+                  <textarea
+                    rows="3"
+                    value={form.razon_consulta}
+                    onChange={(e) => actualizarCampo("razon_consulta", e.target.value)}
+                  />
+                </label>
+
+                <label className="campo-ancho">
+                  Antecedentes previos
+                  <textarea
+                    rows="4"
+                    value={form.antecedentes_previos}
+                    onChange={(e) => actualizarCampo("antecedentes_previos", e.target.value)}
+                  />
+                </label>
+
+                <label className="campo-ancho">
+                  Estudios previos
+                  <textarea
+                    rows="4"
+                    value={form.estudios_previos}
+                    onChange={(e) => actualizarCampo("estudios_previos", e.target.value)}
+                  />
+                </label>
+
+                <label className="campo-ancho">
+                  Medicamentos (razón)
+                  <textarea rows="3" value={form.medicamentos} onChange={(e) => actualizarCampo("medicamentos", e.target.value)} />
+                </label>
+
+                <label className="campo-ancho">
+                  Algo más para agregar
+                  <textarea rows="3" value={form.otros_datos} onChange={(e) => actualizarCampo("otros_datos", e.target.value)} />
+                </label>
+              </section>
+            </>
+          )}
+
+          {paso === 2 && (
+            <section className="seccion-formulario">
+              <h3>Examen físico — Test de lateralidad de MMII e inclinación lateral</h3>
+
+              <div className="grilla-campos">
+                <label>
+                  Leg Check
+                  <input type="text" value={form.leg_check} onChange={(e) => actualizarCampo("leg_check", e.target.value)} />
+                </label>
+
+                <label>
+                  Nervoscope
+                  <input type="text" value={form.nervoscope} onChange={(e) => actualizarCampo("nervoscope", e.target.value)} />
+                </label>
+
+                <label>
+                  Visualización: Frente
+                  <input
+                    type="text"
+                    value={form.visualizacion_frente}
+                    onChange={(e) => actualizarCampo("visualizacion_frente", e.target.value)}
+                  />
+                </label>
+
+                <label>
+                  Visualización: Perfil
+                  <input
+                    type="text"
+                    value={form.visualizacion_perfil}
+                    onChange={(e) => actualizarCampo("visualizacion_perfil", e.target.value)}
+                  />
+                </label>
+
+                <label>
+                  Palpación estática
+                  <input
+                    type="text"
+                    value={form.palpacion_estatica}
+                    onChange={(e) => actualizarCampo("palpacion_estatica", e.target.value)}
+                  />
+                </label>
+
+                <label>
+                  Palpación dinámica
+                  <input
+                    type="text"
+                    value={form.palpacion_dinamica}
+                    onChange={(e) => actualizarCampo("palpacion_dinamica", e.target.value)}
+                  />
+                </label>
+              </div>
+
+              <div className="campo-ancho">
+                <span className="etiqueta-diagrama">Diagrama corporal — marcar zonas afectadas</span>
+                <DiagramaCorporal
+                  valorInicial={form.diagrama_corporal}
+                  onCambiar={(dataUrl) => actualizarCampo("diagrama_corporal", dataUrl)}
+                />
+              </div>
+            </section>
+          )}
+
+          <div className="acciones-formulario">
+            {esEdicion ? (
               <>
                 <button type="button" className="btn-secundario" onClick={onCancelar} disabled={enviando}>
-                  Cancelar
-                </button>
-                <button type="button" className="btn-primario" onClick={irASiguiente}>
-                  Siguiente
-                </button>
-              </>
-            )}
-
-            {paso === 2 && (
-              <>
-                <button type="button" className="btn-secundario" onClick={irAAnterior} disabled={enviando}>
-                  Anterior
+                  Volver
                 </button>
                 <button type="submit" className="btn-primario" disabled={enviando}>
-                  {enviando ? "Guardando..." : "Guardar"}
+                  {enviando ? "Guardando..." : "Guardar cambios"}
                 </button>
               </>
+            ) : (
+              <>
+                {paso === 1 && (
+                  <>
+                    <button type="button" className="btn-secundario" onClick={onCancelar} disabled={enviando}>
+                      Cancelar
+                    </button>
+                    <button type="button" className="btn-primario" onClick={irASiguiente}>
+                      Siguiente
+                    </button>
+                  </>
+                )}
+
+                {paso === 2 && (
+                  <>
+                    <button type="button" className="btn-secundario" onClick={irAAnterior} disabled={enviando}>
+                      Anterior
+                    </button>
+                    <button type="submit" className="btn-primario" disabled={enviando}>
+                      {enviando ? "Guardando..." : "Guardar"}
+                    </button>
+                  </>
+                )}
+              </>
             )}
-          </>
-        )}
-      </div>
-    </form>
+          </div>
+        </form>
+      )}
+    </div>
   );
 }
