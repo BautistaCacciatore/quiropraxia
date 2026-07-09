@@ -5,7 +5,15 @@ async function manejarRespuesta(response) {
     let mensaje = `Error ${response.status}`;
     try {
       const data = await response.json();
-      mensaje = data.detail || mensaje;
+      // FastAPI devuelve errores de validación como un array de objetos
+      // con la forma [{loc: [...], msg: "..."}, ...]. Si no lo manejamos,
+      // al hacer String(array) queda "[object Object]" y el usuario no
+      // entiende qué pasó. Acá concatenamos todos los .msg.
+      if (typeof data.detail === "string") {
+        mensaje = data.detail;
+      } else if (Array.isArray(data.detail)) {
+        mensaje = data.detail.map((e) => e.msg).join("; ");
+      }
     } catch {
       // el cuerpo no era JSON, se deja el mensaje genérico
     }

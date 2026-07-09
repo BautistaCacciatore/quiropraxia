@@ -29,7 +29,11 @@ def login(datos: LoginRequest, response: Response):
         key=NOMBRE_COOKIE,
         value=token,
         httponly=True,       # JavaScript no puede leer esta cookie
-        samesite="none",       # necesario para cross-origin (frontend en Vercel, backend en Railway)
+        # SameSite="none" permite que el navegador envíe la cookie
+        # cuando el frontend (Vercel) y el backend (Railway) están en
+        # dominios distintos. Con "lax" los GET funcionan pero los POST
+        # cross-origin fallan y el usuario ve "No autenticado".
+        samesite="none",
         secure=settings.COOKIE_SECURE,
         max_age=60 * 60 * 8,     # 8 horas, coincide con ACCESS_TOKEN_EXPIRE_MINUTES
         path="/",

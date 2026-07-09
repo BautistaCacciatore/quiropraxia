@@ -118,7 +118,17 @@ export default function PacienteForm({ pacienteInicial, onGuardar, onCancelar })
         await onGuardar(form);
       }
     } catch (err) {
-      setError(err.message);
+      // Si el error no es un Error nativo (a veces fetch lanza objetos
+      // raros), err.message puede ser undefined y React muestra
+      // "[object Object]". Este handler extrae el mensaje pase lo que pase.
+      console.error("Error al guardar paciente:", err);
+      setError(
+        err instanceof Error
+          ? err.message
+          : typeof err === "string"
+            ? err
+            : JSON.stringify(err, Object.getOwnPropertyNames(err))
+      );
     } finally {
       setEnviando(false);
     }
