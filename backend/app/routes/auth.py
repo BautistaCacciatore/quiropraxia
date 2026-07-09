@@ -29,7 +29,7 @@ def login(datos: LoginRequest, response: Response):
         key=NOMBRE_COOKIE,
         value=token,
         httponly=True,       # JavaScript no puede leer esta cookie
-        samesite="lax",       # protección básica contra CSRF
+        samesite="none",       # necesario para cross-origin (frontend en Vercel, backend en Railway)
         secure=settings.COOKIE_SECURE,
         max_age=60 * 60 * 8,     # 8 horas, coincide con ACCESS_TOKEN_EXPIRE_MINUTES
         path="/",
