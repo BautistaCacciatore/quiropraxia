@@ -1,50 +1,24 @@
-/**
- * Único archivo del frontend que sabe que existe un backend HTTP.
- * Si el día de mañana cambia una URL o un endpoint, se toca acá.
- */
+import { getAPIUrl, getAuthHeaders, manejarRespuesta } from "./http";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
-
-async function manejarRespuesta(response) {
-  if (!response.ok) {
-    let mensaje = `Error ${response.status}`;
-    try {
-      const data = await response.json();
-      // FastAPI devuelve errores de validación como un array de objetos
-      // con la forma [{loc: [...], msg: "..."}, ...]. Si no lo manejamos,
-      // al hacer String(array) queda "[object Object]" y el usuario no
-      // entiende qué pasó. Acá concatenamos todos los .msg.
-      if (typeof data.detail === "string") {
-        mensaje = data.detail;
-      } else if (Array.isArray(data.detail)) {
-        mensaje = data.detail.map((e) => e.msg).join("; ");
-      }
-    } catch {
-      // el cuerpo no era JSON, se deja el mensaje genérico
-    }
-    throw new Error(mensaje);
-  }
-  if (response.status === 204) return null;
-  return response.json();
-}
+const API_URL = getAPIUrl();
 
 export async function obtenerPaciente(dni) {
   const res = await fetch(`${API_URL}/pacientes/${dni}`, {
-    credentials: "include",
+    headers: { ...getAuthHeaders() },
   });
   return manejarRespuesta(res);
 }
 
 export async function listarPacientes(ordenPor = "apellido") {
   const res = await fetch(`${API_URL}/pacientes?orden_por=${ordenPor}`, {
-    credentials: "include",
+    headers: { ...getAuthHeaders() },
   });
   return manejarRespuesta(res);
 }
 
 export async function buscarPacientes(texto) {
   const res = await fetch(`${API_URL}/pacientes/buscar?q=${encodeURIComponent(texto)}`, {
-    credentials: "include",
+    headers: { ...getAuthHeaders() },
   });
   return manejarRespuesta(res);
 }
@@ -52,8 +26,7 @@ export async function buscarPacientes(texto) {
 export async function crearPaciente(datos) {
   const res = await fetch(`${API_URL}/pacientes`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    credentials: "include",
+    headers: { "Content-Type": "application/json", ...getAuthHeaders() },
     body: JSON.stringify(datos),
   });
   return manejarRespuesta(res);
@@ -62,8 +35,7 @@ export async function crearPaciente(datos) {
 export async function actualizarPaciente(dni, datos) {
   const res = await fetch(`${API_URL}/pacientes/${dni}`, {
     method: "PATCH",
-    headers: { "Content-Type": "application/json" },
-    credentials: "include",
+    headers: { "Content-Type": "application/json", ...getAuthHeaders() },
     body: JSON.stringify(datos),
   });
   return manejarRespuesta(res);
@@ -72,7 +44,7 @@ export async function actualizarPaciente(dni, datos) {
 export async function eliminarPaciente(dni) {
   const res = await fetch(`${API_URL}/pacientes/${dni}`, {
     method: "DELETE",
-    credentials: "include",
+    headers: { ...getAuthHeaders() },
   });
   return manejarRespuesta(res);
 }

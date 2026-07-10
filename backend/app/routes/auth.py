@@ -1,56 +1,30 @@
-"""
-Endpoints de autenticación. Deliberadamente NO existe un endpoint de
-registro ni de cambio de contraseña: el usuario administrador se crea
-por consola (ver scripts/crear_admin.py), nunca por HTTP.
-"""
-
-from fastapi import APIRouter, Response, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends
 
 from app.schemas.auth import LoginRequest
 from app.services.auth import autenticar
 from app.exceptions.exceptions import CredencialesInvalidas
 from app.core.security import crear_token
-from app.core.config import settings
-from app.core.dependencies import requiere_autenticacion, NOMBRE_COOKIE
+from app.core.dependencies import requiere_autenticacion
 
 router = APIRouter(prefix="/auth", tags=["Autenticación"])
 
 
 @router.post("/login")
-def login(datos: LoginRequest, response: Response):
+def login(datos: LoginRequest):
     try:
         usuario = autenticar(datos.usuario, datos.contrasena)
     except CredencialesInvalidas as e:
         raise HTTPException(status_code=401, detail=str(e))
 
     token = crear_token({"sub": usuario.usuario, "id": usuario.id})
-
-    response.set_cookie(
-        key=NOMBRE_COOKIE,
-        value=token,
-        httponly=True,       # JavaScript no puede leer esta cookie
-        # SameSite="none" permite que el navegador envíe la cookie
-        # cuando el frontend (Vercel) y el backend (Railway) están en
-        # dominios distintos. Con "lax" los GET funcionan pero los POST
-        # cross-origin fallan y el usuario ve "No autenticado".
-        samesite="none",
-        secure=settings.COOKIE_SECURE,
-        max_age=60 * 60 * 8,     # 8 horas, coincide con ACCESS_TOKEN_EXPIRE_MINUTES
-        path="/",
-    )
-    return {"usuario": usuario.usuario}
+    return {"usuario": usuario.usuario, "access_token": token, "token_type": "bearer"}
 
 
 @router.post("/logout")
-def logout(response: Response):
-    response.delete_cookie(NOMBRE_COOKIE, path="/")
+def logout():
     return {"status": "ok"}
 
 
 @router.get("/me")
 def quien_soy(payload: dict = Depends(requiere_autenticacion)):
-    """
-    El frontend llama esto al cargar la página para saber si ya hay
-    una sesión válida (cookie vigente) sin tener que loguearse de nuevo.
-    """
     return {"usuario": payload.get("sub")}

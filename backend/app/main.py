@@ -10,6 +10,8 @@ Documentación interactiva disponible en:
 
 import os
 
+import re
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -27,9 +29,18 @@ app = FastAPI(
 # orígenes están permitidos a llamarla.
 origins_str = os.getenv("CORS_ORIGINS", "http://localhost:5173,http://127.0.0.1:5173")
 allow_origins = [o.strip() for o in origins_str.split(",") if o.strip()]
+frontend_url = os.getenv("FRONTEND_URL", "")
+if frontend_url:
+    allow_origins.append(frontend_url)
+
+# Regex para permitir cualquier deployment de Vercel (previene errores
+# cuando Vercel asigna URLs con hashes como quiropraxia-1jpvtzh24-bachi7.vercel.app)
+origin_regex = re.compile(r"^https://.*\.vercel\.app$")
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=allow_origins,
+    allow_origin_regex=origin_regex,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
