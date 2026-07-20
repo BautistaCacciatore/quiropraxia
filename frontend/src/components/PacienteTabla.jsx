@@ -17,7 +17,7 @@ export default function PacienteTabla({ pacientes, onEditar, onEliminar, onSegui
             <th>Apellido y nombre</th>
             <th>DNI</th>
             <th>Edad</th>
-            <th aria-label="Acciones"></th>
+            <th>Acciones</th>
           </tr>
         </thead>
         <tbody>

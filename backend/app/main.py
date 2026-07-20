@@ -18,7 +18,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.routes import paciente, auth, radiografias, hemisfericidad, seguimiento
 
 app = FastAPI(
-    title="Quiropraxia API",
+    title="Hamada Quiropraxia API",
     description="API para la gestión de pacientes del estudio.",
     version="0.1.0",
 )
@@ -57,4 +57,4 @@ app.include_router(seguimiento.router)
 @app.get("/")
 def estado():
     """Endpoint simple para confirmar que la API está corriendo."""
-    return {"status": "ok", "servicio": "Quiropraxia API"}
+    return {"status": "ok", "servicio": "Hamada Quiropraxia API"}

@@ -34,7 +34,7 @@ export default function LoginPage() {
   return (
     <div className="pagina-login">
       <form className="tarjeta-login" onSubmit={manejarEnvio}>
-        <h1>Quiropraxia</h1>
+        <h1>Hamada Quiropraxia</h1>
         <p className="subtitulo">Iniciá sesión para continuar</p>
 
         {error && <p className="mensaje-error">{error}</p>}

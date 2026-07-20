@@ -10,17 +10,17 @@ import SeguimientoPage from "./pages/SeguimientoPage";
 import HemisfericidadPage from "./pages/HemisfericidadPage";
 import RadiografiasPage from "./pages/RadiografiasPage";
 
-function Marca() {
+function Marca({ onClick }) {
   return (
-    <span className="marca">
+    <button className="marca" onClick={onClick}>
       <svg width="18" height="26" viewBox="0 0 20 28" fill="none" aria-hidden="true">
         <circle cx="10" cy="3" r="3" fill="var(--color-accent)" />
         <circle cx="10" cy="11" r="2.6" fill="var(--color-primary)" />
         <circle cx="10" cy="18" r="2.2" fill="var(--color-primary)" />
         <circle cx="10" cy="24" r="1.8" fill="var(--color-primary)" />
       </svg>
-      Quiropraxia
-    </span>
+      Hamada Quiropraxia
+    </button>
   );
 }
 
@@ -35,7 +35,7 @@ function BarraNavegacion() {
 
   return (
     <nav className="barra-navegacion">
-      <Marca />
+      <Marca onClick={() => navigate("/pacientes")} />
       <div className="enlaces-navegacion">
         <NavLink to="/pacientes" className={({ isActive }) => (isActive ? "activo" : "")}>
           Pacientes

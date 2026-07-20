@@ -21,6 +21,14 @@
     font-weight: 600;
     font-size: 1.15rem;
     color: var(--color-primary-dark);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+  }
+
+  .marca:hover {
+    opacity: 0.8;
   }
   
   .enlaces-navegacion {
