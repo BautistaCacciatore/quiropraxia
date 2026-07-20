@@ -1,6 +1,6 @@
 import "../styles/PacienteTabla.css";
 
-export default function PacienteTabla({ pacientes, onEditar, onEliminar }) {
+export default function PacienteTabla({ pacientes, onEditar, onEliminar, onSeguimiento }) {
   if (pacientes.length === 0) {
     return (
       <div className="estado-vacio">
@@ -36,6 +36,11 @@ export default function PacienteTabla({ pacientes, onEditar, onEliminar }) {
                 <button className="btn-texto" onClick={() => onEditar(p)}>
                   Editar
                 </button>
+                {onSeguimiento && (
+                  <button className="btn-texto" onClick={() => onSeguimiento(p)}>
+                    Seguimiento
+                  </button>
+                )}
                 <button className="btn-texto btn-texto-peligro" onClick={() => onEliminar(p)}>
                   Eliminar
                 </button>

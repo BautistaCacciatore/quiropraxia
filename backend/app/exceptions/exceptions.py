@@ -33,3 +33,8 @@ class RadiografiaNoEncontrada(Exception):
 class ArchivoInvalido(Exception):
     """Se lanza cuando el archivo subido no cumple el tipo o tamaño permitido."""
     pass
+
+
+class SeguimientoNoEncontrado(Exception):
+    """Se lanza al buscar un seguimiento inexistente."""
+    pass

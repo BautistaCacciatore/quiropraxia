@@ -6,6 +6,7 @@ import LoginPage from "./pages/LoginPage";
 import PacientesPage from "./pages/PacientesPage";
 import NuevoPacientePage from "./pages/NuevoPacientePage";
 import EditarPacientePage from "./pages/EditarPacientePage";
+import SeguimientoPage from "./pages/SeguimientoPage";
 
 function Marca() {
   return (
@@ -93,6 +94,14 @@ function AppShell() {
             element={
               <RutaProtegida>
                 <EditarPacientePage />
+              </RutaProtegida>
+            }
+          />
+          <Route
+            path="/pacientes/:dni/seguimiento"
+            element={
+              <RutaProtegida>
+                <SeguimientoPage />
               </RutaProtegida>
             }
           />

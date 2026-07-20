@@ -15,7 +15,7 @@ import re
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.routes import paciente, auth, radiografias, hemisfericidad
+from app.routes import paciente, auth, radiografias, hemisfericidad, seguimiento
 
 app = FastAPI(
     title="Quiropraxia API",
@@ -51,6 +51,7 @@ app.include_router(paciente.router)
 app.include_router(radiografias.router_paciente)
 app.include_router(radiografias.router_radiografia)
 app.include_router(hemisfericidad.router)
+app.include_router(seguimiento.router)
 
 
 @app.get("/")

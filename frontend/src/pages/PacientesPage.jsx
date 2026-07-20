@@ -54,6 +54,7 @@ export default function PacientesPage() {
           pacientes={pacientes}
           onEditar={(p) => navigate(`/pacientes/${p.dni}/editar`)}
           onEliminar={setPacienteAEliminar}
+          onSeguimiento={(p) => navigate(`/pacientes/${p.dni}/seguimiento`)}
         />
       )}
 
