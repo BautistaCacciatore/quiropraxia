@@ -55,9 +55,11 @@ class Paciente(Base):
 
     # Examen de hemisfericidad (21 pruebas, ver app/services/hemisfericidad.py).
     # Se guarda como JSON: {"tono_muscular_disminuido": "derecha", ...}
-    # El resultado (totales + lado de ajuste) NO se guarda acá: se calcula
-    # al vuelo cada vez que se pide el paciente (ver schemas/paciente.py).
     hemisfericidad_examen = Column(JSON, nullable=True)
+    # Resultado calculado del examen. Se guarda explícitamente cuando el
+    # médico toca "Calcular" en el frontend. Si es null, se calcula al
+    # vuelo desde hemisfericidad_examen.
+    hemisfericidad_resultado_guardado = Column(JSON, nullable=True)
 
     # --- Metadata automática ---
     fecha_registro = Column(DateTime, server_default=func.now())

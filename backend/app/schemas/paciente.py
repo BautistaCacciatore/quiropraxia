@@ -43,6 +43,7 @@ class PacienteBase(BaseModel):
     palpacion_dinamica: Optional[str] = None
     diagrama_corporal: Optional[str] = None
     hemisfericidad_examen: Optional[Dict[str, str]] = None
+    hemisfericidad_resultado_guardado: Optional[dict] = None
 
 
 class PacienteCreate(PacienteBase):
@@ -78,6 +79,7 @@ class PacienteUpdate(BaseModel):
     palpacion_dinamica: Optional[str] = None
     diagrama_corporal: Optional[str] = None
     hemisfericidad_examen: Optional[Dict[str, str]] = None
+    hemisfericidad_resultado_guardado: Optional[dict] = None
 
 
 class PacienteOut(PacienteBase):
@@ -94,10 +96,13 @@ class PacienteOut(PacienteBase):
     @property
     def hemisfericidad_resultado(self) -> Optional[dict]:
         """
-        Totales por estructura + lado de ajuste sugerido. Se calcula
-        siempre desde hemisfericidad_examen, nunca se guarda — mismo
-        criterio que 'edad': una sola fuente de verdad.
+        Totales por estructura + lado de ajuste sugerido.
+        Si ya fue calculado y guardado en la BD, se usa ese valor.
+        Si no, se calcula al vuelo desde hemisfericidad_examen.
         """
+        guardado = getattr(self, "hemisfericidad_resultado_guardado", None)
+        if guardado:
+            return guardado
         if not self.hemisfericidad_examen:
             return None
         return calcular_resultado(self.hemisfericidad_examen)
