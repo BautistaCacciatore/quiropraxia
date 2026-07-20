@@ -7,6 +7,8 @@ import PacientesPage from "./pages/PacientesPage";
 import NuevoPacientePage from "./pages/NuevoPacientePage";
 import EditarPacientePage from "./pages/EditarPacientePage";
 import SeguimientoPage from "./pages/SeguimientoPage";
+import HemisfericidadPage from "./pages/HemisfericidadPage";
+import RadiografiasPage from "./pages/RadiografiasPage";
 
 function Marca() {
   return (
@@ -94,6 +96,22 @@ function AppShell() {
             element={
               <RutaProtegida>
                 <EditarPacientePage />
+              </RutaProtegida>
+            }
+          />
+          <Route
+            path="/pacientes/:dni/hemisfericidad"
+            element={
+              <RutaProtegida>
+                <HemisfericidadPage />
+              </RutaProtegida>
+            }
+          />
+          <Route
+            path="/pacientes/:dni/radiografias"
+            element={
+              <RutaProtegida>
+                <RadiografiasPage />
               </RutaProtegida>
             }
           />
