@@ -9,7 +9,7 @@
 .tabla-pacientes {
   width: 100%;
   border-collapse: collapse;
-  min-width: 900px;
+  min-width: 640px;
 }
 
 .tabla-pacientes th {
@@ -41,19 +41,6 @@
   display: flex;
   gap: 0.4rem;
   flex-wrap: wrap;
-}
-
-.th-hemi {
-  text-align: center !important;
-  font-size: 0.65rem !important;
-  padding: 0.85rem 0.4rem !important;
-}
-
-.td-hemi {
-  text-align: center;
-  font-size: 0.78rem;
-  padding: 0.85rem 0.4rem !important;
-  color: var(--color-text-muted);
 }
 
 .btn-accion {
