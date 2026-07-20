@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import DiagramaCorporal from "./DiagramaCorporal";
 import RadiografiasPaciente from "./RadiografiasPaciente";
+import HemisfericidadExamen from "./HemisfericidadExamen";
 import "../styles/PacienteForm.css";
 
 const CAMPOS_INICIALES = {
@@ -27,9 +28,10 @@ const CAMPOS_INICIALES = {
   palpacion_estatica: "",
   palpacion_dinamica: "",
   diagrama_corporal: "",
+  hemisfericidad_examen: {},
 };
 
-const TOTAL_PASOS_CREACION = 2;
+const TOTAL_PASOS_CREACION = 3;
 
 export default function PacienteForm({ pacienteInicial, onGuardar, onCancelar }) {
   const [form, setForm] = useState(CAMPOS_INICIALES);
@@ -40,31 +42,35 @@ export default function PacienteForm({ pacienteInicial, onGuardar, onCancelar })
 
   const esEdicion = Boolean(pacienteInicial);
 
-  // En edición hay 3 secciones navegables libremente (pestañas).
-  // En creación, "Radiografías" no existe todavía: el paciente recién
-  // se crea al guardar, y las radiografías necesitan un DNI ya guardado.
+  // En edición hay 4 secciones navegables libremente (pestañas). En
+  // creación, "Radiografías" no existe todavía: el paciente recién se
+  // crea al guardar, y las radiografías necesitan un DNI ya guardado.
   const pestañas = esEdicion
     ? [
         { id: 1, etiqueta: "Información personal" },
         { id: 2, etiqueta: "Test de lateralidad" },
-        { id: 3, etiqueta: "Radiografías" },
+        { id: 3, etiqueta: "Hemisfericidad" },
+        { id: 4, etiqueta: "Radiografías" },
       ]
     : [
         { id: 1, etiqueta: "Información personal" },
         { id: 2, etiqueta: "Test de lateralidad" },
+        { id: 3, etiqueta: "Hemisfericidad" },
       ];
 
   useEffect(() => {
     setPaso(1);
     if (pacienteInicial) {
+      // hemisfericidad_examen es un objeto, no texto: se trata aparte
+      // para no convertirlo en "" junto con el resto de los campos.
+      const { hemisfericidad_examen, ...resto } = pacienteInicial;
+      const entradasTexto = Object.fromEntries(
+        Object.entries(resto).map(([clave, valor]) => [clave, valor ?? ""])
+      );
       setForm({
         ...CAMPOS_INICIALES,
-        ...pacienteInicial,
-        // Los campos opcionales pueden venir como null desde el backend;
-        // los inputs de React necesitan "" en vez de null.
-        ...Object.fromEntries(
-          Object.entries(pacienteInicial).map(([clave, valor]) => [clave, valor ?? ""])
-        ),
+        ...entradasTexto,
+        hemisfericidad_examen: hemisfericidad_examen || {},
       });
     } else {
       setForm(CAMPOS_INICIALES);
@@ -75,17 +81,24 @@ export default function PacienteForm({ pacienteInicial, onGuardar, onCancelar })
     setForm((prev) => ({ ...prev, [campo]: valor }));
   }
 
+  function actualizarHemisfericidad(clave, valor) {
+    setForm((prev) => ({
+      ...prev,
+      hemisfericidad_examen: { ...prev.hemisfericidad_examen, [clave]: valor },
+    }));
+  }
+
   function irASiguiente() {
     // reportValidity() solo revisa los campos que están montados en el
-    // DOM en este momento (los del paso 1), así que valida sin chocar
-    // con los campos "required" del paso 2 (que acá ni existen todavía).
+    // DOM en este momento (los del paso actual). Los pasos 2 y 3 no
+    // tienen campos obligatorios, así que esto no bloquea nada ahí.
     if (formRef.current.reportValidity()) {
-      setPaso(2);
+      setPaso((p) => Math.min(p + 1, TOTAL_PASOS_CREACION));
     }
   }
 
   function irAAnterior() {
-    setPaso(1);
+    setPaso((p) => Math.max(p - 1, 1));
   }
 
   async function manejarEnvio(e) {
@@ -102,8 +115,6 @@ export default function PacienteForm({ pacienteInicial, onGuardar, onCancelar })
         return;
       }
     } else if (paso !== TOTAL_PASOS_CREACION) {
-      // Por las dudas: si se dispara un submit estando en el paso 1
-      // (por ejemplo, Enter en un input), todavía no guardamos.
       irASiguiente();
       return;
     }
@@ -112,23 +123,13 @@ export default function PacienteForm({ pacienteInicial, onGuardar, onCancelar })
     setError(null);
     try {
       if (esEdicion) {
-        const { dni, ...datosEditables } = form;
+        const { dni, hemisfericidad_resultado, ...datosEditables } = form;
         await onGuardar(pacienteInicial.dni, datosEditables);
       } else {
         await onGuardar(form);
       }
     } catch (err) {
-      // Si el error no es un Error nativo (a veces fetch lanza objetos
-      // raros), err.message puede ser undefined y React muestra
-      // "[object Object]". Este handler extrae el mensaje pase lo que pase.
-      console.error("Error al guardar paciente:", err);
-      setError(
-        err instanceof Error
-          ? err.message
-          : typeof err === "string"
-            ? err
-            : JSON.stringify(err, Object.getOwnPropertyNames(err))
-      );
+      setError(err.message);
     } finally {
       setEnviando(false);
     }
@@ -157,11 +158,10 @@ export default function PacienteForm({ pacienteInicial, onGuardar, onCancelar })
 
       {error && <p className="mensaje-error">{error}</p>}
 
-      {paso === 3 && esEdicion ? (
+      {paso === 4 && esEdicion ? (
         // Ojo: esto NO va dentro de un <form>. RadiografiasPaciente tiene
         // su propio <form> para subir archivos, y un <form> anidado dentro
-        // de otro rompe el submit (el evento "submit" del de adentro
-        // termina disparando también el de afuera).
+        // de otro rompe el submit.
         <>
           <section className="seccion-formulario">
             <h3>Radiografías</h3>
@@ -385,6 +385,13 @@ export default function PacienteForm({ pacienteInicial, onGuardar, onCancelar })
             </section>
           )}
 
+          {paso === 3 && (
+            <section className="seccion-formulario">
+              <h3>Hemisfericidad</h3>
+              <HemisfericidadExamen valores={form.hemisfericidad_examen} onCambiar={actualizarHemisfericidad} />
+            </section>
+          )}
+
           <div className="acciones-formulario">
             {esEdicion ? (
               <>
@@ -398,25 +405,24 @@ export default function PacienteForm({ pacienteInicial, onGuardar, onCancelar })
             ) : (
               <>
                 {paso === 1 && (
-                  <>
-                    <button type="button" className="btn-secundario" onClick={onCancelar} disabled={enviando}>
-                      Cancelar
-                    </button>
-                    <button type="button" className="btn-primario" onClick={irASiguiente}>
-                      Siguiente
-                    </button>
-                  </>
+                  <button type="button" className="btn-secundario" onClick={onCancelar} disabled={enviando}>
+                    Cancelar
+                  </button>
                 )}
-
-                {paso === 2 && (
-                  <>
-                    <button type="button" className="btn-secundario" onClick={irAAnterior} disabled={enviando}>
-                      Anterior
-                    </button>
-                    <button type="submit" className="btn-primario" disabled={enviando}>
-                      {enviando ? "Guardando..." : "Guardar"}
-                    </button>
-                  </>
+                {paso > 1 && (
+                  <button type="button" className="btn-secundario" onClick={irAAnterior} disabled={enviando}>
+                    Anterior
+                  </button>
+                )}
+                {paso < TOTAL_PASOS_CREACION && (
+                  <button type="button" className="btn-primario" onClick={irASiguiente}>
+                    Siguiente
+                  </button>
+                )}
+                {paso === TOTAL_PASOS_CREACION && (
+                  <button type="submit" className="btn-primario" disabled={enviando}>
+                    {enviando ? "Guardando..." : "Guardar"}
+                  </button>
                 )}
               </>
             )}

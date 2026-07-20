@@ -3,7 +3,7 @@ Modelo de datos del paciente.
 """
 
 from datetime import date
-from sqlalchemy import Column, Integer, String, Date, Text, DateTime, func
+from sqlalchemy import Column, Integer, String, Date, Text, DateTime, JSON, func
 from sqlalchemy.orm import relationship
 
 from app.db.database import Base
@@ -52,6 +52,12 @@ class Paciente(Base):
     # Guarda el dibujo final (imagen base + marcas del médico) como PNG
     # codificado en base64. Es una sola imagen combinada frente+espalda.
     diagrama_corporal = Column(Text, nullable=True)
+
+    # Examen de hemisfericidad (21 pruebas, ver app/services/hemisfericidad.py).
+    # Se guarda como JSON: {"tono_muscular_disminuido": "derecha", ...}
+    # El resultado (totales + lado de ajuste) NO se guarda acá: se calcula
+    # al vuelo cada vez que se pide el paciente (ver schemas/paciente.py).
+    hemisfericidad_examen = Column(JSON, nullable=True)
 
     # --- Metadata automática ---
     fecha_registro = Column(DateTime, server_default=func.now())

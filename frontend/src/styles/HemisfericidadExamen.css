@@ -1,0 +1,105 @@
+.tabla-hemisfericidad-contenedor {
+    overflow-x: auto;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    margin-bottom: 1rem;
+  }
+  
+  .tabla-hemisfericidad {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 480px;
+  }
+  
+  .tabla-hemisfericidad th {
+    text-align: left;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--color-text-muted);
+    padding: 0.7rem 0.8rem;
+    border-bottom: 1px solid var(--color-border);
+    background: var(--color-bg);
+  }
+  
+  .tabla-hemisfericidad th:not(:first-child) {
+    text-align: center;
+  }
+  
+  .tabla-hemisfericidad td {
+    padding: 0.55rem 0.8rem;
+    border-bottom: 1px solid var(--color-border);
+    font-size: 0.88rem;
+  }
+  
+  .tabla-hemisfericidad tbody tr:last-child td {
+    border-bottom: none;
+  }
+  
+  .tabla-hemisfericidad tbody tr:hover {
+    background: var(--color-bg);
+  }
+  
+  .celda-radio {
+    text-align: center;
+  }
+  
+  .celda-radio input {
+    width: auto;
+    cursor: pointer;
+  }
+  
+  .acciones-hemisfericidad {
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 1rem;
+  }
+  
+  .resultado-hemisfericidad {
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    padding: 1.1rem;
+  }
+  
+  .totales-hemisfericidad {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.8rem;
+    margin-bottom: 0.9rem;
+  }
+  
+  .totales-hemisfericidad div {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+  
+  .totales-hemisfericidad span {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--color-text-muted);
+  }
+  
+  .totales-hemisfericidad strong {
+    font-size: 1.2rem;
+    color: var(--color-primary-dark);
+  }
+  
+  .lado-ajuste {
+    margin: 0;
+    padding-top: 0.8rem;
+    border-top: 1px solid var(--color-border);
+    font-size: 0.95rem;
+  }
+  
+  .lado-ajuste strong {
+    color: var(--color-accent);
+  }
+  
+  @media (max-width: 640px) {
+    .totales-hemisfericidad {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }

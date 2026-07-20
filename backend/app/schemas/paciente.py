@@ -8,8 +8,10 @@ directamente reutilizables el día que conectes una API (FastAPI).
 """
 
 from datetime import date, datetime
-from typing import Optional
-from pydantic import BaseModel, Field
+from typing import Optional, Dict
+from pydantic import BaseModel, Field, computed_field
+
+from app.services.hemisfericidad import calcular_resultado
 
 
 class PacienteBase(BaseModel):
@@ -40,6 +42,7 @@ class PacienteBase(BaseModel):
     palpacion_estatica: Optional[str] = None
     palpacion_dinamica: Optional[str] = None
     diagrama_corporal: Optional[str] = None
+    hemisfericidad_examen: Optional[Dict[str, str]] = None
 
 
 class PacienteCreate(PacienteBase):
@@ -74,6 +77,7 @@ class PacienteUpdate(BaseModel):
     palpacion_estatica: Optional[str] = None
     palpacion_dinamica: Optional[str] = None
     diagrama_corporal: Optional[str] = None
+    hemisfericidad_examen: Optional[Dict[str, str]] = None
 
 
 class PacienteOut(PacienteBase):
@@ -85,3 +89,15 @@ class PacienteOut(PacienteBase):
 
     class Config:
         from_attributes = True  # permite construir esto directo desde el modelo ORM
+
+    @computed_field
+    @property
+    def hemisfericidad_resultado(self) -> Optional[dict]:
+        """
+        Totales por estructura + lado de ajuste sugerido. Se calcula
+        siempre desde hemisfericidad_examen, nunca se guarda — mismo
+        criterio que 'edad': una sola fuente de verdad.
+        """
+        if not self.hemisfericidad_examen:
+            return None
+        return calcular_resultado(self.hemisfericidad_examen)
