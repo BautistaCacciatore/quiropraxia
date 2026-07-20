@@ -28,10 +28,9 @@ const CAMPOS_INICIALES = {
   palpacion_estatica: "",
   palpacion_dinamica: "",
   diagrama_corporal: "",
-  hemisfericidad_examen: {},
 };
 
-const TOTAL_PASOS_CREACION = 3;
+const TOTAL_PASOS_CREACION = 2;
 
 export default function PacienteForm({ pacienteInicial, onGuardar, onCancelar }) {
   const [form, setForm] = useState(CAMPOS_INICIALES);
@@ -55,7 +54,6 @@ export default function PacienteForm({ pacienteInicial, onGuardar, onCancelar })
     : [
         { id: 1, etiqueta: "Información personal" },
         { id: 2, etiqueta: "Test de lateralidad" },
-        { id: 3, etiqueta: "Hemisfericidad" },
       ];
 
   useEffect(() => {
@@ -101,8 +99,35 @@ export default function PacienteForm({ pacienteInicial, onGuardar, onCancelar })
     setPaso((p) => Math.max(p - 1, 1));
   }
 
+  function calcularEdad(fechaNac) {
+    if (!fechaNac) return null;
+    const hoy = new Date();
+    const nac = new Date(fechaNac + "T00:00:00");
+    let edad = hoy.getFullYear() - nac.getFullYear();
+    const mes = hoy.getMonth() - nac.getMonth();
+    if (mes < 0 || (mes === 0 && hoy.getDate() < nac.getDate())) edad--;
+    return edad;
+  }
+
+  function validarDNI(valor) {
+    return /^\d+$/.test(valor);
+  }
+
   async function manejarEnvio(e) {
     e.preventDefault();
+
+    if (!validarDNI(form.dni)) {
+      setPaso(1);
+      setError("El DNI debe contener solo números.");
+      return;
+    }
+
+    const edad = calcularEdad(form.fecha_nacimiento);
+    if (edad === null || edad < 0) {
+      setPaso(1);
+      setError("La fecha de nacimiento es obligatoria y la edad debe ser mayor a 0.");
+      return;
+    }
 
     if (esEdicion) {
       // En edición se puede navegar libremente entre pestañas, así que
@@ -185,8 +210,13 @@ export default function PacienteForm({ pacienteInicial, onGuardar, onCancelar })
                     DNI
                     <input
                       type="text"
+                      inputMode="numeric"
+                      pattern="[0-9]+"
                       value={form.dni}
-                      onChange={(e) => actualizarCampo("dni", e.target.value)}
+                      onChange={(e) => {
+                        const soloNumeros = e.target.value.replace(/\D/g, "");
+                        actualizarCampo("dni", soloNumeros);
+                      }}
                       required
                       disabled={esEdicion}
                     />

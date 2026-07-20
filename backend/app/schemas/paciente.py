@@ -48,7 +48,7 @@ class PacienteBase(BaseModel):
 
 class PacienteCreate(PacienteBase):
     """Datos requeridos para registrar un paciente nuevo."""
-    dni: str = Field(..., min_length=6, max_length=15)
+    dni: str = Field(..., min_length=6, max_length=15, pattern=r"^\d+$")
 
 
 class PacienteUpdate(BaseModel):
