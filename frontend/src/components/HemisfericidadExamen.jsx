@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { obtenerPruebas } from "../api/hemisfericidad";
-import "./HemisfericidadExamen.css";
+import "../styles/HemisfericidadExamen.css";
 
 const OPCIONES = [
   { valor: "derecha", etiqueta: "Derecha" },
