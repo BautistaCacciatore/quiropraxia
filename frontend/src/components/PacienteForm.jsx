@@ -113,8 +113,16 @@ export default function PacienteForm({ pacienteInicial, onGuardar, onCancelar })
     return /^\d+$/.test(valor);
   }
 
+  async function manejarGuardar() {
+    if (formRef.current) {
+      formRef.current.requestSubmit();
+    } else {
+      await manejarEnvio();
+    }
+  }
+
   async function manejarEnvio(e) {
-    e.preventDefault();
+    if (e?.preventDefault) e.preventDefault();
 
     if (!validarDNI(form.dni)) {
       setPaso(1);
@@ -183,22 +191,22 @@ export default function PacienteForm({ pacienteInicial, onGuardar, onCancelar })
 
       {error && <p className="mensaje-error">{error}</p>}
 
-      {paso === 4 && esEdicion ? (
-        // Ojo: esto NO va dentro de un <form>. RadiografiasPaciente tiene
-        // su propio <form> para subir archivos, y un <form> anidado dentro
-        // de otro rompe el submit.
-        <>
-          <section className="seccion-formulario">
-            <h3>Radiografías</h3>
-            <RadiografiasPaciente dni={pacienteInicial.dni} />
-          </section>
+      {esEdicion && (
+        <div className="acciones-formulario acciones-superior">
+          <button type="button" className="btn-secundario" onClick={onCancelar} disabled={enviando}>
+            Volver
+          </button>
+          <button type="button" className="btn-primario" onClick={manejarGuardar} disabled={enviando}>
+            {enviando ? "Guardando..." : "Guardar cambios"}
+          </button>
+        </div>
+      )}
 
-          <div className="acciones-formulario">
-            <button type="button" className="btn-secundario" onClick={onCancelar}>
-              Volver
-            </button>
-          </div>
-        </>
+      {paso === 4 && esEdicion ? (
+        <section className="seccion-formulario">
+          <h3>Radiografías</h3>
+          <RadiografiasPaciente dni={pacienteInicial.dni} />
+        </section>
       ) : (
         <form onSubmit={manejarEnvio} ref={formRef}>
           {paso === 1 && (
@@ -422,17 +430,8 @@ export default function PacienteForm({ pacienteInicial, onGuardar, onCancelar })
             </section>
           )}
 
-          <div className="acciones-formulario">
-            {esEdicion ? (
-              <>
-                <button type="button" className="btn-secundario" onClick={onCancelar} disabled={enviando}>
-                  Volver
-                </button>
-                <button type="submit" className="btn-primario" disabled={enviando}>
-                  {enviando ? "Guardando..." : "Guardar cambios"}
-                </button>
-              </>
-            ) : (
+          {!esEdicion && (
+            <div className="acciones-formulario">
               <>
                 {paso === 1 && (
                   <button type="button" className="btn-secundario" onClick={onCancelar} disabled={enviando}>
@@ -455,8 +454,8 @@ export default function PacienteForm({ pacienteInicial, onGuardar, onCancelar })
                   </button>
                 )}
               </>
-            )}
-          </div>
+            </div>
+          )}
         </form>
       )}
     </div>

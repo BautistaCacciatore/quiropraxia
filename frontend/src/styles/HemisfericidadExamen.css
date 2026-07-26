@@ -55,12 +55,6 @@
   cursor: pointer;
 }
 
-.ayuda-deseleccionar {
-  font-size: 0.78rem;
-  color: var(--color-text-muted);
-  margin: 0 0 1rem;
-}
-
 .acciones-hemisfericidad {
   display: flex;
   justify-content: flex-start;

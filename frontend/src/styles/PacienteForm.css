@@ -73,3 +73,7 @@
     color: var(--color-primary-dark);
     border-bottom-color: var(--color-accent);
   }
+
+  .acciones-superior {
+    margin-bottom: 1.2rem;
+  }

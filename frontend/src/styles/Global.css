@@ -165,6 +165,17 @@ a.btn-texto:visited {
   margin-bottom: 1rem;
 }
 
+.mensaje-exito-hemisfericidad {
+  background: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+  padding: 0.7rem 1rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-bottom: 1rem;
+}
+
 /* --- Formularios base (label/input/textarea de toda la app) --- */
 
 label {

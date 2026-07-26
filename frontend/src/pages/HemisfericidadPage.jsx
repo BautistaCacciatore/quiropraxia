@@ -96,7 +96,7 @@ export default function HemisfericidadPage() {
       </div>
 
       {error && <p className="mensaje-error">{error}</p>}
-      {exitoso && <p className="mensaje-exito">Resultado guardado correctamente.</p>}
+      {exitoso && <p className="mensaje-exito-hemisfericidad">Resultado guardado correctamente.</p>}
 
       {resultadoMostrar && (
         <div className="resultado-hemisfericidad" style={{ marginBottom: "1rem" }}>

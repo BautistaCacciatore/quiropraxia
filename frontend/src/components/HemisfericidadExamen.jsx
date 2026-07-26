@@ -66,8 +66,6 @@ export default function HemisfericidadExamen({ valores, onCambiar }) {
           </tbody>
         </table>
       </div>
-
-      <p className="ayuda-deseleccionar">Tip: hacé click de nuevo sobre una opción ya marcada para dejarla sin responder.</p>
     </div>
   );
 }
