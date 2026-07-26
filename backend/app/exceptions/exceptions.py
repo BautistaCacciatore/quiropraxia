@@ -15,11 +15,6 @@ class PacienteNoEncontrado(Exception):
     pass
 
 
-class DatosInvalidos(Exception):
-    """Se lanza cuando se intenta actualizar con un campo inexistente o inválido."""
-    pass
-
-
 class CredencialesInvalidas(Exception):
     """Se lanza cuando el usuario o la contraseña no coinciden."""
     pass

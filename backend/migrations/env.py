@@ -19,7 +19,7 @@ sys.path.append(str(Path(__file__).resolve().parent.parent))
 
 from app.core.config import settings
 from app.db.database import Base
-from app.models import paciente, usuario, radiografia  # noqa: F401  (importan los modelos para registrarlos en Base.metadata)  # noqa: F401  (importa los modelos para registrarlos en Base.metadata)
+from app.models import paciente, usuario, radiografia, seguimiento  # noqa: F401  (importa los modelos para registrarlos en Base.metadata)
 
 # Objeto de configuración de Alembic (lee alembic.ini)
 config = context.config
