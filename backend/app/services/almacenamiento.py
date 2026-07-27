@@ -1,19 +1,23 @@
 """
 Abstracción de almacenamiento de archivos en Backblaze B2.
 
-Usa la API S3-compatible de B2 a través de boto3.
+Usa la API S3-compatible de B2 (boto3) para subir y descargar,
+y la API nativa (b2sdk) para eliminar permanentemente (incluyendo
+versiones ocultas que S3 no borra).
 """
 
 import uuid
 from pathlib import Path
 import boto3
 from botocore.config import Config as BotoConfig
+from b2sdk.v2 import B2Api, InMemoryAccountInfo
 from fastapi import UploadFile
 
 from app.core.config import settings
 from app.exceptions.exceptions import ArchivoInvalido
 
 _s3 = None
+_b2_api = None
 
 
 def _get_s3():
@@ -27,6 +31,15 @@ def _get_s3():
             config=BotoConfig(signature_version="s3v4"),
         )
     return _s3
+
+
+def _get_b2_api():
+    global _b2_api
+    if _b2_api is None:
+        info = InMemoryAccountInfo()
+        _b2_api = B2Api(info)
+        _b2_api.authorize_account("production", settings.B2_KEY_ID, settings.B2_APPLICATION_KEY)
+    return _b2_api
 
 
 def guardar_archivo(archivo: UploadFile, subcarpeta: str) -> tuple[str, str, str]:
@@ -78,6 +91,8 @@ def ruta_absoluta(ruta_relativa: str, descargar: bool = False, filename: str | N
 
 
 def eliminar_archivo(ruta_relativa: str) -> None:
-    """Borra el archivo de B2."""
-    s3 = _get_s3()
-    s3.delete_object(Bucket=settings.B2_BUCKET_NAME, Key=ruta_relativa)
+    """Borra el archivo de B2 permanentemente, incluyendo todas sus versiones."""
+    api = _get_b2_api()
+    bucket = api.get_bucket_by_name(settings.B2_BUCKET_NAME)
+    for version in bucket.list_file_versions(ruta_relativa):
+        api.delete_file_version(version.id_, version.file_name)
