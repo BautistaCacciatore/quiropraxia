@@ -10,6 +10,7 @@ import base64
 
 from app.db.database import obtener_sesion
 from app.models.paciente import Paciente
+from app.models.seguimiento import Seguimiento
 from app.schemas.paciente import PacienteCreate, PacienteUpdate
 from app.exceptions.exceptions import PacienteYaExiste, PacienteNoEncontrado
 from app.services import almacenamiento
@@ -123,6 +124,25 @@ def eliminar_paciente(dni: str) -> None:
         paciente = sesion.query(Paciente).filter_by(dni=dni).first()
         if not paciente:
             raise PacienteNoEncontrado(f"No se encontró un paciente con DNI {dni}")
+
+        # Limpiar archivos en B2
+        for r in paciente.radiografias:
+            if r.ruta_archivo:
+                try:
+                    almacenamiento.eliminar_archivo(r.ruta_archivo)
+                except Exception:
+                    pass  # no bloquear la eliminación si falla B2
+        if paciente.diagrama_corporal_ruta:
+            try:
+                almacenamiento.eliminar_archivo(paciente.diagrama_corporal_ruta)
+            except Exception:
+                pass
+
+        # Eliminar seguimiento si existe (no hay cascade en la FK)
+        seguimiento = sesion.query(Seguimiento).filter_by(paciente_id=paciente.id).first()
+        if seguimiento:
+            sesion.delete(seguimiento)
+
         sesion.delete(paciente)
         sesion.commit()
     finally:

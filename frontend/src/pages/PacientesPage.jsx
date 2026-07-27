@@ -6,14 +6,21 @@ import ConfirmarEliminar from "../components/ConfirmarEliminar";
 import "../styles/PacientesPage.css";
 
 export default function PacientesPage() {
-  const { pacientes, cargando, error, buscar, eliminar } = usePacientes();
+  const { pacientes, cargando, error: hookError, buscar, eliminar } = usePacientes();
   const [pacienteAEliminar, setPacienteAEliminar] = useState(null);
+  const [error, setError] = useState(null);
   const [textoBusqueda, setTextoBusqueda] = useState("");
   const navigate = useNavigate();
 
   async function confirmarEliminacion(paciente) {
-    await eliminar(paciente.dni);
-    setPacienteAEliminar(null);
+    try {
+      setError(null);
+      await eliminar(paciente.dni);
+      setPacienteAEliminar(null);
+    } catch (e) {
+      setError(e.message);
+      setPacienteAEliminar(null);
+    }
   }
 
   function manejarBusqueda(e) {
@@ -45,7 +52,7 @@ export default function PacientesPage() {
         </button>
       </form>
 
-      {error && <p className="mensaje-error">{error}</p>}
+      {(hookError || error) && <p className="mensaje-error">{error || hookError}</p>}
 
       {cargando ? (
         <p className="estado-cargando">Cargando pacientes...</p>
