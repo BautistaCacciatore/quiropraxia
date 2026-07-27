@@ -60,12 +60,15 @@ def guardar_archivo(archivo: UploadFile, subcarpeta: str) -> tuple[str, str, str
     return ruta_relativa, archivo.filename, archivo.content_type
 
 
-def ruta_absoluta(ruta_relativa: str) -> str:
-    """Devuelve una URL firmada temporal para descargar/ver el archivo."""
+def ruta_absoluta(ruta_relativa: str, descargar: bool = False) -> str:
+    """Devuelve una URL firmada temporal para ver (inline) o descargar (attachment) el archivo."""
+    params = {"Bucket": settings.B2_BUCKET_NAME, "Key": ruta_relativa}
+    if descargar:
+        params["ResponseContentDisposition"] = "attachment"
     s3 = _get_s3()
     url = s3.generate_presigned_url(
         "get_object",
-        Params={"Bucket": settings.B2_BUCKET_NAME, "Key": ruta_relativa},
+        Params=params,
         ExpiresIn=3600,
     )
     return url

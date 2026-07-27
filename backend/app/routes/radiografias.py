@@ -71,13 +71,13 @@ def listar_radiografias_de_paciente(dni: str):
 
 
 @router_radiografia.get("/{radiografia_id}/archivo")
-def descargar_archivo(radiografia_id: int):
+def descargar_archivo(radiografia_id: int, descargar: bool = False):
     try:
         radiografia = radiografia_service.obtener_radiografia(radiografia_id)
     except RadiografiaNoEncontrada as e:
         raise HTTPException(status_code=404, detail=str(e))
 
-    url = almacenamiento.ruta_absoluta(radiografia.ruta_archivo)
+    url = almacenamiento.ruta_absoluta(radiografia.ruta_archivo, descargar=descargar)
     return RedirectResponse(url=url)
 
 
