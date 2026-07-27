@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { listarRadiografias, subirRadiografia, eliminarRadiografia, urlArchivo } from "../api/radiografias";
 import RadiografiaVisor from "./RadiografiaVisor";
+import ConfirmarEliminar from "./ConfirmarEliminar";
 import "../styles/RadiografiasPaciente.css";
 
 const FORM_INICIAL = { titulo: "", fecha: "", descripcion: "" };
@@ -14,6 +15,7 @@ export default function RadiografiasPaciente({ dni }) {
   const [previsualizacion, setPrevisualizacion] = useState(null);
   const [subiendo, setSubiendo] = useState(false);
   const [radiografiaSeleccionada, setRadiografiaSeleccionada] = useState(null);
+  const [radiografiaAEliminar, setRadiografiaAEliminar] = useState(null);
 
   useEffect(() => {
     cargar();
@@ -81,12 +83,13 @@ export default function RadiografiasPaciente({ dni }) {
   }
 
   async function manejarEliminar(id) {
-    if (!window.confirm("¿Eliminar esta radiografía? No se puede deshacer.")) return;
     try {
       await eliminarRadiografia(id);
       setRadiografias((prev) => prev.filter((r) => r.id !== id));
+      setRadiografiaAEliminar(null);
     } catch (e) {
       setError(e.message);
+      setRadiografiaAEliminar(null);
     }
   }
 
@@ -211,7 +214,7 @@ export default function RadiografiasPaciente({ dni }) {
                   <a href={urlArchivo(r.id, { descargar: true })} className="btn-texto">
                     Descargar
                   </a>
-                  <button type="button" className="btn-texto btn-texto-peligro" onClick={() => manejarEliminar(r.id)}>
+                  <button type="button" className="btn-texto btn-texto-peligro" onClick={() => setRadiografiaAEliminar(r)}>
                     Eliminar
                   </button>
                 </div>
@@ -222,6 +225,12 @@ export default function RadiografiasPaciente({ dni }) {
       </div>
 
       <RadiografiaVisor radiografia={radiografiaSeleccionada} onCerrar={() => setRadiografiaSeleccionada(null)} />
+
+      <ConfirmarEliminar
+        radiografia={radiografiaAEliminar}
+        onConfirmar={(r) => manejarEliminar(r.id)}
+        onCancelar={() => setRadiografiaAEliminar(null)}
+      />
     </div>
   );
 }

@@ -221,6 +221,11 @@ input:disabled {
   margin-top: 0.5rem;
 }
 
+.acciones-seguimiento {
+  display: flex;
+  gap: 0.8rem;
+}
+
 /* --- Modal genérico (lo usan ConfirmarEliminar, RadiografiaVisor, etc.) --- */
 
 .modal-fondo {
