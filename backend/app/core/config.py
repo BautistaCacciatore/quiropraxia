@@ -46,12 +46,11 @@ class Settings:
     # Cuánto dura la sesión antes de tener que loguearse de nuevo.
     ACCESS_TOKEN_EXPIRE_MINUTES: int = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "480"))  # 8 horas
 
-    # --- Almacenamiento de archivos (radiografías, etc.) ---
-    # Carpeta donde se guardan los archivos subidos. Relativa a donde se
-    # corre uvicorn (backend/). El día de mañana que esto migre a la nube,
-    # este valor deja de usarse acá y pasa a vivir dentro de
-    # app/services/almacenamiento.py — nada más del código cambia.
-    UPLOADS_DIR: str = os.getenv("UPLOADS_DIR", "uploads")
+    # --- Almacenamiento de archivos (radiografías) en Backblaze B2 ---
+    B2_KEY_ID: str = os.getenv("B2_KEY_ID", "")
+    B2_APPLICATION_KEY: str = os.getenv("B2_APPLICATION_KEY", "")
+    B2_BUCKET_NAME: str = os.getenv("B2_BUCKET_NAME", "quiropraxia-radiografias")
+    B2_ENDPOINT: str = os.getenv("B2_ENDPOINT", "https://s3.us-east-1.backblazeb2.com")
     # Tipos de archivo permitidos y tamaño máximo (en bytes) por archivo.
     TIPOS_ARCHIVO_PERMITIDOS: tuple = ("application/pdf", "image/jpeg", "image/png")
     TAMANO_MAXIMO_ARCHIVO: int = 15 * 1024 * 1024  # 15 MB

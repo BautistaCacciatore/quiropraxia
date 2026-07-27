@@ -1,34 +1,39 @@
 """
-Abstracción de almacenamiento de archivos.
+Abstracción de almacenamiento de archivos en Backblaze B2.
 
-Esta es la ÚNICA parte del sistema que sabe dónde viven físicamente
-los archivos subidos (hoy: una carpeta en este servidor). El resto del
-código (rutas, servicios) solo llama a estas funciones — no le importa
-si por dentro se guarda en disco o en la nube.
-
-El día de mañana que se migre a un servicio como Amazon S3, el cambio
-se limita a reescribir el contenido de estas tres funciones. Todo lo
-demás (modelos, rutas, frontend) sigue funcionando igual.
+Usa la API S3-compatible de B2 a través de boto3.
 """
 
-import os
 import uuid
 from pathlib import Path
+import boto3
+from botocore.config import Config as BotoConfig
 from fastapi import UploadFile
 
 from app.core.config import settings
 from app.exceptions.exceptions import ArchivoInvalido
 
-# Carpeta base, relativa a donde se ejecuta uvicorn (backend/).
-_CARPETA_BASE = Path(settings.UPLOADS_DIR)
+_s3 = None
+
+
+def _get_s3():
+    global _s3
+    if _s3 is None:
+        _s3 = boto3.client(
+            "s3",
+            endpoint_url=settings.B2_ENDPOINT,
+            aws_access_key_id=settings.B2_KEY_ID,
+            aws_secret_access_key=settings.B2_APPLICATION_KEY,
+            config=BotoConfig(signature_version="s3v4"),
+        )
+    return _s3
 
 
 def guardar_archivo(archivo: UploadFile, subcarpeta: str) -> tuple[str, str, str]:
     """
-    Guarda un archivo subido y devuelve (ruta_relativa, nombre_original, tipo_mime).
+    Sube un archivo a Backblaze B2 y devuelve (ruta_en_b2, nombre_original, tipo_mime).
 
-    ruta_relativa es lo que se guarda en la base de datos — un identificador
-    opaco para el resto del sistema, no necesariamente un path de disco.
+    ruta_en_b2 es el object key (ej: "radiografias/{uuid}.pdf").
     """
     if archivo.content_type not in settings.TIPOS_ARCHIVO_PERMITIDOS:
         raise ArchivoInvalido(
@@ -40,27 +45,36 @@ def guardar_archivo(archivo: UploadFile, subcarpeta: str) -> tuple[str, str, str
     if len(contenido) > settings.TAMANO_MAXIMO_ARCHIVO:
         raise ArchivoInvalido("El archivo supera el tamaño máximo permitido (15 MB).")
 
-    carpeta_destino = _CARPETA_BASE / subcarpeta
-    carpeta_destino.mkdir(parents=True, exist_ok=True)
-
     extension = Path(archivo.filename).suffix
     nombre_unico = f"{uuid.uuid4().hex}{extension}"
-    ruta_completa = carpeta_destino / nombre_unico
+    ruta_relativa = f"{subcarpeta}/{nombre_unico}"
 
-    with open(ruta_completa, "wb") as f:
-        f.write(contenido)
+    s3 = _get_s3()
+    s3.put_object(
+        Bucket=settings.B2_BUCKET_NAME,
+        Key=ruta_relativa,
+        Body=contenido,
+        ContentType=archivo.content_type,
+    )
 
-    ruta_relativa = str(Path(subcarpeta) / nombre_unico)
     return ruta_relativa, archivo.filename, archivo.content_type
 
 
-def ruta_absoluta(ruta_relativa: str) -> Path:
-    """Devuelve la ubicación real en disco a partir de la ruta guardada en la base."""
-    return _CARPETA_BASE / ruta_relativa
+def ruta_absoluta(ruta_relativa: str) -> str:
+    """Devuelve una URL firmada temporal para descargar/ver el archivo."""
+    s3 = _get_s3()
+    url = s3.generate_presigned_url(
+        "get_object",
+        Params={"Bucket": settings.B2_BUCKET_NAME, "Key": ruta_relativa},
+        ExpiresIn=3600,
+    )
+    return url
 
 
 def eliminar_archivo(ruta_relativa: str) -> None:
-    """Borra el archivo físico. No falla si ya no existe."""
-    ruta = ruta_absoluta(ruta_relativa)
-    if ruta.exists():
-        os.remove(ruta)
+    """Borra el archivo de B2. No falla si ya no existe."""
+    try:
+        s3 = _get_s3()
+        s3.delete_object(Bucket=settings.B2_BUCKET_NAME, Key=ruta_relativa)
+    except Exception:
+        pass
