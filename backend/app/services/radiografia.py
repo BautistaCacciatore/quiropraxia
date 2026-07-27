@@ -1,5 +1,6 @@
 from datetime import date
 from fastapi import UploadFile
+from sqlalchemy.orm import joinedload
 
 from app.db.database import obtener_sesion
 from app.models.radiografia import Radiografia
@@ -53,7 +54,12 @@ def listar_radiografias(paciente_id: int) -> list[Radiografia]:
 def obtener_radiografia(radiografia_id: int) -> Radiografia:
     sesion = obtener_sesion()
     try:
-        radiografia = sesion.query(Radiografia).filter_by(id=radiografia_id).first()
+        radiografia = (
+            sesion.query(Radiografia)
+            .options(joinedload(Radiografia.paciente))
+            .filter_by(id=radiografia_id)
+            .first()
+        )
         if not radiografia:
             raise RadiografiaNoEncontrada(f"No se encontró la radiografía {radiografia_id}")
         return radiografia
