@@ -27,7 +27,7 @@ def _subir_diagrama(diagrama_corporal: str) -> str:
 
 
 def _procesar_diagrama(datos_dict: dict, ruta_anterior: str | None = None) -> None:
-    """Si datos_dict trae diagrama_corporal, lo sube a B2 y lo reemplaza por la ruta."""
+    """Si datos_dict trae diagrama_corporal, lo sube a B2 y guarda la ruta."""
     diagrama = datos_dict.pop("diagrama_corporal", None)
     if not diagrama:
         return
@@ -35,7 +35,6 @@ def _procesar_diagrama(datos_dict: dict, ruta_anterior: str | None = None) -> No
         almacenamiento.eliminar_archivo(ruta_anterior)
     ruta = _subir_diagrama(diagrama)
     datos_dict["diagrama_corporal_ruta"] = ruta
-    datos_dict["diagrama_corporal"] = None
 
 
 def crear_paciente(datos: PacienteCreate) -> Paciente:

@@ -49,9 +49,6 @@ class Paciente(Base):
     # radiografia ya NO es un campo de texto acá: ahora es su propia
     # tabla (Radiografia), porque un paciente puede tener varias, y cada
     # una tiene un archivo real (PDF o imagen) adjunto.
-    # Guarda el dibujo final (imagen base + marcas del médico) como PNG
-    # codificado en base64. Es una sola imagen combinada frente+espalda.
-    diagrama_corporal = Column(Text, nullable=True)
     # Ruta en B2 del diagrama corporal (PNG). Si está presente, se sirve
     # desde B2 en vez de devolver el base64. El campo diagrama_corporal
     # se limpia después de subir a B2.
