@@ -26,10 +26,12 @@ router_paciente = APIRouter(
 )
 
 # Rutas sueltas por id: ver el archivo y eliminar (no necesitan el DNI).
+# La descarga (GET /archivo) NO lleva auth porque el navegador no envía
+# headers personalizados en <img src>, <iframe src> ni <a href>.
+# La URL firmada de B2 ya expira en 1 hora.
 router_radiografia = APIRouter(
     prefix="/radiografias",
     tags=["Radiografías"],
-    dependencies=[Depends(requiere_autenticacion)],
 )
 
 
@@ -79,7 +81,7 @@ def descargar_archivo(radiografia_id: int):
     return RedirectResponse(url=url)
 
 
-@router_radiografia.delete("/{radiografia_id}", status_code=204)
+@router_radiografia.delete("/{radiografia_id}", status_code=204, dependencies=[Depends(requiere_autenticacion)])
 def eliminar_radiografia(radiografia_id: int):
     try:
         radiografia_service.eliminar_radiografia(radiografia_id)
