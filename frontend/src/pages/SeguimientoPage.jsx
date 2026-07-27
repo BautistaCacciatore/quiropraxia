@@ -64,7 +64,7 @@ export default function SeguimientoPage() {
       </div>
 
       {error && <p className="mensaje-error">{error}</p>}
-      {exitoso && <p className="mensaje-exito">Seguimiento guardado correctamente.</p>}
+      {exitoso && <p className="mensaje-exito-hemisfericidad">Seguimiento guardado correctamente.</p>}
 
       <SeguimientoTabla filas={filas} onChange={setFilas} />
     </div>

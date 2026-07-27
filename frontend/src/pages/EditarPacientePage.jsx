@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import PacienteForm from "../components/PacienteForm";
 import { obtenerPaciente, actualizarPaciente } from "../api/pacientes";
@@ -6,6 +6,7 @@ import { obtenerPaciente, actualizarPaciente } from "../api/pacientes";
 export default function EditarPacientePage() {
   const { dni } = useParams();
   const navigate = useNavigate();
+  const formRef = useRef(null);
 
   const [paciente, setPaciente] = useState(null);
   const [cargando, setCargando] = useState(true);
@@ -41,9 +42,17 @@ export default function EditarPacientePage() {
             {paciente.nombre} {paciente.apellido} — DNI {paciente.dni}
           </p>
         </div>
+        <div className="acciones-seguimiento">
+          <button type="button" className="btn-secundario" onClick={() => navigate("/pacientes")}>
+            Volver
+          </button>
+          <button type="button" className="btn-primario" onClick={() => formRef.current?.submit()}>
+            Guardar cambios
+          </button>
+        </div>
       </header>
 
-      <PacienteForm pacienteInicial={paciente} onGuardar={manejarGuardar} onCancelar={() => navigate("/pacientes")} />
+      <PacienteForm ref={formRef} pacienteInicial={paciente} onGuardar={manejarGuardar} onCancelar={() => navigate("/pacientes")} />
     </div>
   );
 }

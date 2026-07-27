@@ -45,9 +45,37 @@ const FILAS_INICIALES = Array.from({ length: 15 }, (_, i) => ({
 export { FILAS_INICIALES };
 
 export default function SeguimientoTabla({ filas, onChange }) {
+  const columnasEditables = COLUMNAS.filter((c) => !c.fija);
+
   function actualizarCelda(idx, key, valor) {
     const nuevas = filas.map((f, i) => (i === idx ? { ...f, [key]: valor } : f));
     onChange(nuevas);
+  }
+
+  function manejarTecla(e, idxFila, idxColEditable) {
+    const input = e.target;
+    const tecla = e.key;
+    let nuevaFila = idxFila;
+    let nuevaCol = idxColEditable;
+
+    if (tecla === "ArrowLeft" && idxColEditable > 0) {
+      nuevaCol = idxColEditable - 1;
+    } else if (tecla === "ArrowRight" && idxColEditable < columnasEditables.length - 1) {
+      nuevaCol = idxColEditable + 1;
+    } else if (tecla === "ArrowUp" && idxFila > 0) {
+      nuevaFila = idxFila - 1;
+    } else if (tecla === "ArrowDown" && idxFila < filas.length - 1) {
+      nuevaFila = idxFila + 1;
+    } else {
+      return;
+    }
+
+    e.preventDefault();
+    const tabla = input.closest("table");
+    if (!tabla) return;
+    const filasTbody = tabla.querySelectorAll("tbody tr");
+    const celdaDestino = filasTbody[nuevaFila]?.querySelectorAll(".celda-editable input")[nuevaCol];
+    celdaDestino?.focus();
   }
 
   return (
@@ -67,12 +95,14 @@ export default function SeguimientoTabla({ filas, onChange }) {
                 if (col.fija) {
                   return <td key={col.key} className="celda-fija">{idx + 1}</td>;
                 }
+                const idxColEditable = columnasEditables.indexOf(col);
                 return (
                   <td key={col.key} className="celda-editable">
                     <input
                       type={col.tipo || "text"}
                       value={fila[col.key] ?? ""}
                       onChange={(e) => actualizarCelda(idx, col.key, e.target.value)}
+                      onKeyDown={(e) => manejarTecla(e, idx, idxColEditable)}
                       maxLength={col.tipo === "date" ? undefined : 5}
                     />
                   </td>

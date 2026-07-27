@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, forwardRef, useImperativeHandle } from "react";
 import DiagramaCorporal from "./DiagramaCorporal";
 import RadiografiasPaciente from "./RadiografiasPaciente";
 import HemisfericidadExamen from "./HemisfericidadExamen";
@@ -32,12 +32,16 @@ const CAMPOS_INICIALES = {
 
 const TOTAL_PASOS_CREACION = 2;
 
-export default function PacienteForm({ pacienteInicial, onGuardar, onCancelar }) {
+const PacienteForm = forwardRef(function PacienteForm({ pacienteInicial, onGuardar, onCancelar }, ref) {
   const [form, setForm] = useState(CAMPOS_INICIALES);
   const [paso, setPaso] = useState(1);
   const [enviando, setEnviando] = useState(false);
   const [error, setError] = useState(null);
   const formRef = useRef(null);
+
+  useImperativeHandle(ref, () => ({
+    submit: () => manejarGuardar(),
+  }));
 
   const esEdicion = Boolean(pacienteInicial);
 
@@ -190,17 +194,6 @@ export default function PacienteForm({ pacienteInicial, onGuardar, onCancelar })
       )}
 
       {error && <p className="mensaje-error">{error}</p>}
-
-      {esEdicion && (
-        <div className="acciones-formulario acciones-superior">
-          <button type="button" className="btn-secundario" onClick={onCancelar} disabled={enviando}>
-            Volver
-          </button>
-          <button type="button" className="btn-primario" onClick={manejarGuardar} disabled={enviando}>
-            {enviando ? "Guardando..." : "Guardar cambios"}
-          </button>
-        </div>
-      )}
 
       {paso === 4 && esEdicion ? (
         <section className="seccion-formulario">
@@ -460,4 +453,6 @@ export default function PacienteForm({ pacienteInicial, onGuardar, onCancelar })
       )}
     </div>
   );
-}
+});
+
+export default PacienteForm;
