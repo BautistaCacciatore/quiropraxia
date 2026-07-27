@@ -96,14 +96,6 @@ class PacienteOut(PacienteBase):
 
     @computed_field
     @property
-    def diagrama_corporal_url(self) -> Optional[str]:
-        if not self.diagrama_corporal_ruta:
-            return None
-        from app.services.almacenamiento import ruta_absoluta
-        return ruta_absoluta(self.diagrama_corporal_ruta)
-
-    @computed_field
-    @property
     def hemisfericidad_resultado(self) -> Optional[dict]:
         """
         Totales por estructura + lado de ajuste sugerido.

@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, forwardRef, useImperativeHandle } from "re
 import DiagramaCorporal from "./DiagramaCorporal";
 import RadiografiasPaciente from "./RadiografiasPaciente";
 import HemisfericidadExamen from "./HemisfericidadExamen";
+import { getDiagramaUrl } from "../api/pacientes";
 import "../styles/PacienteForm.css";
 
 const CAMPOS_INICIALES = {
@@ -65,14 +66,17 @@ const PacienteForm = forwardRef(function PacienteForm({ pacienteInicial, onGuard
     if (pacienteInicial) {
       // hemisfericidad_examen es un objeto, no texto: se trata aparte
       // para no convertirlo en "" junto con el resto de los campos.
-      const { hemisfericidad_examen, diagrama_corporal_url, ...resto } = pacienteInicial;
+      const { hemisfericidad_examen, ...resto } = pacienteInicial;
       const entradasTexto = Object.fromEntries(
         Object.entries(resto).map(([clave, valor]) => [clave, valor ?? ""])
       );
+      const urlDiagrama = pacienteInicial.diagrama_corporal_ruta
+        ? getDiagramaUrl(pacienteInicial.dni)
+        : "";
       setForm({
         ...CAMPOS_INICIALES,
         ...entradasTexto,
-        diagrama_corporal: diagrama_corporal_url || "",
+        diagrama_corporal: urlDiagrama,
         hemisfericidad_examen: hemisfericidad_examen || {},
       });
     } else {

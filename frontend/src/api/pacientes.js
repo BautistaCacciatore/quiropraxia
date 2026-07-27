@@ -2,6 +2,10 @@ import { getAPIUrl, getAuthHeaders, manejarRespuesta } from "./http";
 
 const API_URL = getAPIUrl();
 
+export function getDiagramaUrl(dni) {
+  return `${API_URL}/diagramas/${dni}`;
+}
+
 export async function obtenerPaciente(dni) {
   const res = await fetch(`${API_URL}/pacientes/${dni}`, {
     headers: { ...getAuthHeaders() },

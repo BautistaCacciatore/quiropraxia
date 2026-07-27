@@ -24,6 +24,7 @@ export default function DiagramaCorporal({ valorInicial, onCambiar }) {
       canvas.height = img.height;
       ctx.drawImage(img, 0, 0);
     };
+    img.crossOrigin = "anonymous";
     img.src = valorInicial || IMAGEN_BASE;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -84,6 +85,7 @@ export default function DiagramaCorporal({ valorInicial, onCambiar }) {
       ctx.drawImage(img, 0, 0);
       guardarCambio();
     };
+    img.crossOrigin = "anonymous";
     img.src = IMAGEN_BASE;
   }
 
