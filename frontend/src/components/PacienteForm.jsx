@@ -65,13 +65,14 @@ const PacienteForm = forwardRef(function PacienteForm({ pacienteInicial, onGuard
     if (pacienteInicial) {
       // hemisfericidad_examen es un objeto, no texto: se trata aparte
       // para no convertirlo en "" junto con el resto de los campos.
-      const { hemisfericidad_examen, ...resto } = pacienteInicial;
+      const { hemisfericidad_examen, diagrama_corporal_url, ...resto } = pacienteInicial;
       const entradasTexto = Object.fromEntries(
         Object.entries(resto).map(([clave, valor]) => [clave, valor ?? ""])
       );
       setForm({
         ...CAMPOS_INICIALES,
         ...entradasTexto,
+        diagrama_corporal: diagrama_corporal_url || "",
         hemisfericidad_examen: hemisfericidad_examen || {},
       });
     } else {

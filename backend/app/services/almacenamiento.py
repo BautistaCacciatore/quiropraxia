@@ -90,6 +90,27 @@ def ruta_absoluta(ruta_relativa: str, descargar: bool = False, filename: str | N
     return url
 
 
+def guardar_bytes(contenido: bytes, content_type: str, subcarpeta: str, extension: str = ".png") -> str:
+    """Sube bytes directamente a B2 (sin validaciones de UploadFile) y devuelve la ruta relativa."""
+    nombre_unico = f"{uuid.uuid4().hex}{extension}"
+    ruta_relativa = f"{subcarpeta}/{nombre_unico}"
+    s3 = _get_s3()
+    s3.put_object(
+        Bucket=settings.B2_BUCKET_NAME,
+        Key=ruta_relativa,
+        Body=contenido,
+        ContentType=content_type,
+    )
+    return ruta_relativa
+
+
+def leer_archivo(ruta_relativa: str) -> bytes:
+    """Lee el contenido de un archivo de B2."""
+    s3 = _get_s3()
+    obj = s3.get_object(Bucket=settings.B2_BUCKET_NAME, Key=ruta_relativa)
+    return obj["Body"].read()
+
+
 def eliminar_archivo(ruta_relativa: str) -> None:
     """Borra el archivo de B2 permanentemente, incluyendo todas sus versiones."""
     api = _get_b2_api()

@@ -48,6 +48,7 @@ app.add_middleware(
 
 app.include_router(auth.router)
 app.include_router(paciente.router)
+app.include_router(paciente.router_diagrama)
 app.include_router(radiografias.router_paciente)
 app.include_router(radiografias.router_radiografia)
 app.include_router(hemisfericidad.router)

@@ -9,10 +9,11 @@ a códigos de error HTTP estándar (404, 409, etc.).
 
 from typing import List
 from fastapi import APIRouter, HTTPException, Query, Depends
+from fastapi.responses import Response
 
 from app.schemas.paciente import PacienteCreate, PacienteUpdate, PacienteOut
 from app.exceptions.exceptions import PacienteYaExiste, PacienteNoEncontrado
-from app.services import paciente
+from app.services import paciente, almacenamiento
 from app.core.dependencies import requiere_autenticacion
 
 # dependencies=[...] acá aplica el chequeo de sesión a TODOS los endpoints
@@ -66,3 +67,23 @@ def eliminar_paciente(dni: str):
         paciente.eliminar_paciente(dni)
     except PacienteNoEncontrado as e:
         raise HTTPException(status_code=404, detail=str(e))
+
+
+# ---- Diagrama corporal (sin auth, lo carga el navegador en un <img>) ----
+
+router_diagrama = APIRouter(prefix="/diagramas", tags=["Diagramas"])
+
+
+@router_diagrama.get("/{dni}")
+def obtener_diagrama(dni: str):
+    """Devuelve la imagen del diagrama corporal del paciente."""
+    try:
+        p = paciente.obtener_paciente_por_dni(dni)
+    except PacienteNoEncontrado as e:
+        raise HTTPException(status_code=404, detail=str(e))
+
+    if not p.diagrama_corporal_ruta:
+        raise HTTPException(status_code=404, detail="El paciente no tiene diagrama corporal")
+
+    contenido = almacenamiento.leer_archivo(p.diagrama_corporal_ruta)
+    return Response(content=contenido, media_type="image/png")

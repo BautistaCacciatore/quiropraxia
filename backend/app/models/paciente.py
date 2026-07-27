@@ -52,6 +52,10 @@ class Paciente(Base):
     # Guarda el dibujo final (imagen base + marcas del médico) como PNG
     # codificado en base64. Es una sola imagen combinada frente+espalda.
     diagrama_corporal = Column(Text, nullable=True)
+    # Ruta en B2 del diagrama corporal (PNG). Si está presente, se sirve
+    # desde B2 en vez de devolver el base64. El campo diagrama_corporal
+    # se limpia después de subir a B2.
+    diagrama_corporal_ruta = Column(String(500), nullable=True)
 
     # Examen de hemisfericidad (21 pruebas, ver app/services/hemisfericidad.py).
     # Se guarda como JSON: {"tono_muscular_disminuido": "derecha", ...}

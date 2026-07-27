@@ -88,9 +88,19 @@ class PacienteOut(PacienteBase):
     dni: str
     edad: int
     fecha_registro: datetime
+    diagrama_corporal: Optional[str] = None  # siempre None en output (se sirve desde B2)
+    diagrama_corporal_ruta: Optional[str] = None
 
     class Config:
         from_attributes = True  # permite construir esto directo desde el modelo ORM
+
+    @computed_field
+    @property
+    def diagrama_corporal_url(self) -> Optional[str]:
+        if not self.diagrama_corporal_ruta:
+            return None
+        from app.services.almacenamiento import ruta_absoluta
+        return ruta_absoluta(self.diagrama_corporal_ruta)
 
     @computed_field
     @property
