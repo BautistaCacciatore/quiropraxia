@@ -60,11 +60,14 @@ def guardar_archivo(archivo: UploadFile, subcarpeta: str) -> tuple[str, str, str
     return ruta_relativa, archivo.filename, archivo.content_type
 
 
-def ruta_absoluta(ruta_relativa: str, descargar: bool = False) -> str:
+def ruta_absoluta(ruta_relativa: str, descargar: bool = False, filename: str | None = None) -> str:
     """Devuelve una URL firmada temporal para ver (inline) o descargar (attachment) el archivo."""
     params = {"Bucket": settings.B2_BUCKET_NAME, "Key": ruta_relativa}
     if descargar:
-        params["ResponseContentDisposition"] = "attachment"
+        if filename:
+            params["ResponseContentDisposition"] = f'attachment; filename="{filename}"'
+        else:
+            params["ResponseContentDisposition"] = "attachment"
     s3 = _get_s3()
     url = s3.generate_presigned_url(
         "get_object",
@@ -75,9 +78,6 @@ def ruta_absoluta(ruta_relativa: str, descargar: bool = False) -> str:
 
 
 def eliminar_archivo(ruta_relativa: str) -> None:
-    """Borra el archivo de B2. No falla si ya no existe."""
-    try:
-        s3 = _get_s3()
-        s3.delete_object(Bucket=settings.B2_BUCKET_NAME, Key=ruta_relativa)
-    except Exception:
-        pass
+    """Borra el archivo de B2."""
+    s3 = _get_s3()
+    s3.delete_object(Bucket=settings.B2_BUCKET_NAME, Key=ruta_relativa)

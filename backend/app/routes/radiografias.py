@@ -7,6 +7,7 @@ schema Pydantic como en pacientes.py.
 """
 
 from datetime import date
+from pathlib import Path
 from typing import List, Optional
 from fastapi import APIRouter, HTTPException, Depends, Form, File, UploadFile
 from fastapi.responses import RedirectResponse
@@ -77,7 +78,13 @@ def descargar_archivo(radiografia_id: int, descargar: bool = False):
     except RadiografiaNoEncontrada as e:
         raise HTTPException(status_code=404, detail=str(e))
 
-    url = almacenamiento.ruta_absoluta(radiografia.ruta_archivo, descargar=descargar)
+    dni = radiografia.paciente.dni if radiografia.paciente else "desconocido"
+    nombre_doc = radiografia.nombre_archivo or "archivo"
+    ext = Path(nombre_doc).suffix
+    titulo_limpio = "".join(c for c in radiografia.titulo if c.isalnum() or c in " _-").strip().replace(" ", "_") or "sin_titulo"
+    filename = f"{dni}_{titulo_limpio}{ext}" if descargar else None
+
+    url = almacenamiento.ruta_absoluta(radiografia.ruta_archivo, descargar=descargar, filename=filename)
     return RedirectResponse(url=url)
 
 
