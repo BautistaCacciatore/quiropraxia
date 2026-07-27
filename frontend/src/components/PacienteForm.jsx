@@ -162,6 +162,10 @@ const PacienteForm = forwardRef(function PacienteForm({ pacienteInicial, onGuard
     try {
       if (esEdicion) {
         const { dni, hemisfericidad_resultado, ...datosEditables } = form;
+        // Limpiar campos que llegaron como string vacío pero la API espera null/dict
+        for (const key of ["hemisfericidad_examen", "hemisfericidad_resultado_guardado"]) {
+          if (datosEditables[key] === "") datosEditables[key] = null;
+        }
         await onGuardar(pacienteInicial.dni, datosEditables);
       } else {
         await onGuardar(form);
